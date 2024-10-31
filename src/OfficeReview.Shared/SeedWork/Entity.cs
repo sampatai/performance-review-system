@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System.ComponentModel.DataAnnotations;
 
 namespace OfficeReview.Shared.SeedWork;
 public abstract class Entity
@@ -84,6 +85,24 @@ public abstract class Entity
     public static bool operator !=(Entity left, Entity right)
     {
         return !(left == right);
+    }
+}
+
+public abstract class AuditableEntity : Entity
+{
+    public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
+    public string CreatedBy { get; private set; } = "System";
+    public DateTime? LastModifiedDate { get; private set; }
+    public string? LastModifiedBy { get; private set; }
+    public void SetCreationAudits(string createdBy)
+    {
+        CreatedDate = DateTime.UtcNow;
+        CreatedBy = createdBy;
+    }
+    public void SetModificationAudits(string modifiedBy)
+    {
+        LastModifiedDate = DateTime.UtcNow;
+        LastModifiedBy = modifiedBy;
     }
 }
 

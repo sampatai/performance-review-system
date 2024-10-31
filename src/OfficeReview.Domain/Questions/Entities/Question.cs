@@ -1,4 +1,4 @@
-﻿using OfficeReview.Domain.Questions.Enum;
+﻿using System.Xml.Linq;
 
 namespace OfficeReview.Domain.Questions.Entities
 {
@@ -10,6 +10,31 @@ namespace OfficeReview.Domain.Questions.Entities
         }
         public Guid QuestionGuid { get; private set; }
         public string QuestionText { get; private set; }
-        public FeedbackQuestionType FeedbackQuestionType { get; private set; }
+        public bool IsDeleted { get; private set; }
+        public bool IsActive { get; private set; }
+
+        public Question(string question)
+        {
+            Guard.Against.NullOrEmpty(question, nameof(question));
+            IsActive = true;
+            IsDeleted = false;
+            QuestionText = question;
+
+        }
+        internal void SetQuestion(string question)
+        {
+            Guard.Against.NullOrEmpty(question, nameof(question));
+
+            QuestionText = question;
+        }
+
+        internal void SetDeActivate()
+        {
+            IsActive = false;
+        }
+        internal void SetDelete()
+        {
+            IsDeleted = true;
+        }
     }
 }
