@@ -1,0 +1,6 @@
+@OfficeReview.API_HostAddress = http://localhost:5002
+
+GET {{OfficeReview.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
