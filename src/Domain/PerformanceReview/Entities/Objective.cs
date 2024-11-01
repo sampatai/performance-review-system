@@ -1,5 +1,5 @@
 ﻿using OfficePerformanceReview.Domain.Common.ValueObjects;
-using OfficePerformanceReview.Domain.PerformanceReview.ValueObjects;
+using OfficePerformanceReview.Domain.PerformanceReview.Enums;
 
 namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
 {
@@ -11,7 +11,26 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public DateRange Timeline { get; private set; }
         public ObjectiveStatus ProgressStatus { get; set; }
 
-        public Objective(string description, string actionPlan, DateRange timeline, ObjectiveStatus objectiveStatus)
+        public Objective(string description,
+            string actionPlan,
+            DateRange timeline,
+            ObjectiveStatus objectiveStatus)
+        {
+            Guard.Against.NullOrEmpty(description, nameof(description));
+            Guard.Against.NullOrEmpty(actionPlan, nameof(actionPlan));
+            Guard.Against.Null(timeline, nameof(timeline));
+            Guard.Against.Null(objectiveStatus, nameof(objectiveStatus));
+            ObjectiveGuid = Guid.NewGuid();
+            Description = description;
+            ActionPlan = actionPlan;
+            Timeline = timeline;
+            ProgressStatus = objectiveStatus;
+        }
+
+        internal void SetObjective(string description,
+            string actionPlan,
+            DateRange timeline,
+            ObjectiveStatus objectiveStatus)
         {
             Guard.Against.NullOrEmpty(description, nameof(description));
             Guard.Against.NullOrEmpty(actionPlan, nameof(actionPlan));

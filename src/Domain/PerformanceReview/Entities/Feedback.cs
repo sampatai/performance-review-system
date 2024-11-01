@@ -1,18 +1,22 @@
 ﻿using OfficePerformanceReview.Domain.PerformanceReview.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
 {
     public class Feedback : Entity
     {
+        protected Feedback()
+        {
+            
+        }
         public Guid FeedbackGuid { get; private set; }
-        public string? EmployeeComment { get; set; }
-        public string? ManagerComment { get; set; }
+        private List<BehaviorMetric> _BehaviorMetrics = new();
+        public IReadOnlyList<BehaviorMetric> BehaviorMetrics => _BehaviorMetrics.AsReadOnly();
+        public string? RevieweeComment { get; set; }
+        public string? ReviewerComment { get; set; }
         public OverallRating? PotentialLevel { get; private set; }
+        public FeedbackStatus RevieweeFeedbackStatus { get; private set; }
+        public FeedbackStatus ReviewerFeedbackStatus { get; private set; }
+
 
     }
 }

@@ -1,5 +1,7 @@
 ﻿using OfficePerformanceReview.Domain.Common.ValueObjects;
 using OfficePerformanceReview.Domain.PerformanceReview.Entities;
+using OfficePerformanceReview.Domain.PerformanceReview.Enums;
+using System.Collections.Generic;
 
 
 namespace OfficePerformanceReview.Domain.PerformanceReview.Root
@@ -8,21 +10,19 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
     {
         protected PerformanceReview() { }
 
-        public NameValue ReviewerInitiator { get; private set; }
-        public NameValue ReviewerOf { get; private set; }
+        public NameValue Reviewer { get; private set; }
+        public NameValue ReviewOf { get; private set; }
         public Guid PerformanceReviewGuid { get; private set; }
         public int PerformanceOverviewId { get; private set; }
         public int EvaluationFormId { get; private set; }
         public DateTime? ReviewDate { get; private set; }
-
+        public FeedbackStatus FeedbackStatus { get; private set; }
         public List<Reviewee> _Reviewees = new();
         public IReadOnlyList<Reviewee> Reviewees => _Reviewees.AsReadOnly();
 
         private List<Objective> _objectives = new();
         public IReadOnlyList<Objective> Objectives => _objectives.AsReadOnly();
-        private Feedback _Feedback = new();
-        public List<BehaviorMetric> BehaviorMetrics { get; private set; } = new List<BehaviorMetric>();
-
-        public Feedback Feedbacks => _Feedback;
+       
+        public Feedback Feedbacks { get; private set; }
     }
 }

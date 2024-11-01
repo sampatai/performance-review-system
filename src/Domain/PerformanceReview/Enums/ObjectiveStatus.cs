@@ -1,4 +1,4 @@
-﻿namespace OfficePerformanceReview.Domain.PerformanceReview.ValueObjects
+﻿namespace OfficePerformanceReview.Domain.PerformanceReview.Enums
 {
     public class ObjectiveStatus : Enumeration
     {

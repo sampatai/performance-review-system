@@ -1,4 +1,6 @@
-﻿namespace OfficePerformanceReview.Domain.Common.ValueObjects
+﻿using OfficeReview.Domain.Questions.Root;
+
+namespace OfficePerformanceReview.Domain.Common.ValueObjects
 {
     public class QuestionFeedback : ValueObject
     {
@@ -10,6 +12,8 @@
 
         public QuestionFeedback(int questionId, string questionText, string text)
         {
+            Guard.Against.NegativeOrZero(questionId, nameof(questionId));
+
             QuestionId = questionId;
             QuestionText = Guard.Against.NullOrEmpty(questionText);
             Text = Guard.Against.NullOrEmpty(text);
