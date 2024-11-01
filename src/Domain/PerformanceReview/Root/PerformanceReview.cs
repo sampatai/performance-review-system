@@ -1,6 +1,7 @@
 ﻿using OfficePerformanceReview.Domain.Common.ValueObjects;
 using OfficePerformanceReview.Domain.PerformanceReview.Entities;
 using OfficePerformanceReview.Domain.PerformanceReview.Enums;
+using OfficeReview.Domain.Questions.Enum;
 using System.Collections.Generic;
 
 
@@ -14,9 +15,10 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         public NameValue ReviewOf { get; private set; }
         public Guid PerformanceReviewGuid { get; private set; }
         public int PerformanceOverviewId { get; private set; }
-        public int EvaluationFormId { get; private set; }
+        public FormEvaluation EvaluationType { get; private set; }
         public DateTime? ReviewDate { get; private set; }
         public FeedbackStatus FeedbackStatus { get; private set; }
+        
         public List<Reviewee> _Reviewees = new();
         public IReadOnlyList<Reviewee> Reviewees => _Reviewees.AsReadOnly();
 

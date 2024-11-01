@@ -1,5 +1,6 @@
 ﻿using OfficePerformanceReview.Domain.Common.ValueObjects;
 using OfficePerformanceReview.Domain.PerformanceReview.Enums;
+using OfficeReview.Domain.Questions.Enum;
 namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
 {
     public class Reviewee : Entity
@@ -7,7 +8,8 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public Guid RevieweeGuid { get; private set; }
         public NameValue ReviewBy { get; private set; }
         public DateOnly? ReviewDate { get; private set; }
-        public int EvaluationFormId { get; private set; }
+        public DateOnly DeadLine { get; private set; }
+        public FormEvaluation EvaluationType { get; private set; }
         private List<QuestionFeedback> _FeedBacks = new();
         public IReadOnlyList<QuestionFeedback> Feedbacks => _FeedBacks.AsReadOnly();
         public FeedbackStatus FeedbackStatus { get; private set; }
@@ -15,14 +17,15 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public bool IsActive { get; private set; }
         protected Reviewee() { }
 
-        public Reviewee(int staffId, string name, int evaluationFormId)
+        public Reviewee(int staffId, string name, int evaluationFormId, DateOnly deadLine)
         {
             Guard.Against.NegativeOrZero(evaluationFormId, nameof(evaluationFormId));
-
-            EvaluationFormId = evaluationFormId;
+            Guard.Against.Null(deadLine, nameof(deadLine));
+            EvaluationType = FormEvaluation.PeerEvaluation;
             ReviewBy = new NameValue(staffId, name);
             FeedbackStatus = FeedbackStatus.Pending;
             IsActive = true;
+            DeadLine = deadLine;
         }
 
         internal void SetReviewDate(DateOnly reviewDate)
@@ -31,7 +34,6 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             Guard.Against.OutOfRange(reviewDate, nameof(reviewDate), DateOnly.MinValue, DateOnly.MaxValue);
             ReviewDate = reviewDate;
             _EvaluateFeedbackStatus();
-
         }
 
         internal void SetFeedback(IEnumerable<QuestionFeedback> feedbacks)
