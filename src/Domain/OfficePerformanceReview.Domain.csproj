@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OfficeReview.Shared\OfficePerformanceReview.Shared.csproj" />
+    <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" Version="5.0.0" />
+    <ProjectReference Include="..\Shared\OfficePerformanceReview.Shared.csproj" />
   </ItemGroup>
 
 </Project>

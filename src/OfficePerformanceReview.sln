@@ -3,11 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficePerformanceReview.API", "OfficeReview.API\OfficePerformanceReview.API.csproj", "{3519F9D4-F882-4555-B9FB-1B628B783568}"
+
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficePerformanceReview.Shared", "Shared\OfficePerformanceReview.Shared.csproj", "{2D6B1C00-FDB6-474F-AAB2-398C6BB3B412}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficePerformanceReview.Shared", "OfficeReview.Shared\OfficePerformanceReview.Shared.csproj", "{2D6B1C00-FDB6-474F-AAB2-398C6BB3B412}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficePerformanceReview.Domain", "OfficeReview.Domain\OfficePerformanceReview.Domain.csproj", "{7E8D2952-6D89-4E78-9B14-1068C24B2BF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficePerformanceReview.Domain", "Domain\OfficePerformanceReview.Domain.csproj", "{7E8D2952-6D89-4E78-9B14-1068C24B2BF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
