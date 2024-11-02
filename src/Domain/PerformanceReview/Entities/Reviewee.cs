@@ -17,9 +17,9 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public bool IsActive { get; private set; }
         protected Reviewee() { }
 
-        public Reviewee(int staffId, string name, int evaluationFormId, DateOnly deadLine)
+        public Reviewee(int staffId, string name, DateOnly deadLine)
         {
-            Guard.Against.NegativeOrZero(evaluationFormId, nameof(evaluationFormId));
+
             Guard.Against.Null(deadLine, nameof(deadLine));
             EvaluationType = FormEvaluation.PeerEvaluation;
             ReviewBy = new NameValue(staffId, name);
@@ -28,11 +28,13 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             DeadLine = deadLine;
         }
 
-        internal void SetReviewDate(DateOnly reviewDate)
+        internal void SetReviewee(int staffId, string name, DateOnly reviewDate)
         {
             Guard.Against.Null(reviewDate, nameof(reviewDate));
             Guard.Against.OutOfRange(reviewDate, nameof(reviewDate), DateOnly.MinValue, DateOnly.MaxValue);
             ReviewDate = reviewDate;
+            ReviewBy = new NameValue(staffId, name);
+
             _EvaluateFeedbackStatus();
         }
 
