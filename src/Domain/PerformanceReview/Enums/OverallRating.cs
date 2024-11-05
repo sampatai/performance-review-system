@@ -11,6 +11,8 @@
         public static OverallRating TechnicalExpert => new(7, "Technical Expert", 17);
         public static OverallRating InconsistentPerformer => new(8, "Inconsistent Performer", 10);
         public static OverallRating Risk => new(9, "Risk", 10);
+        public static OverallRating Reviewing => new(10, "Reviewing", 0);
+
         public OverallRating(int id, string name, int increasePercents) : base(id, name)
         {
             IncreasePercents = increasePercents;

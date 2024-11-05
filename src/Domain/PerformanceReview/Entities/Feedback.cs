@@ -15,17 +15,18 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public IReadOnlyList<BehaviorMetric> BehaviorMetrics => _behaviorMetrics.AsReadOnly();
         public string? RevieweeComment { get; set; }
         public string? ReviewerComment { get; set; }
-        public OverallRating? PotentialLevel { get; private set; }
+        public OverallRating PotentialLevel { get; private set; }
         public FeedbackStatus RevieweeFeedbackStatus { get; private set; }
-        public FeedbackStatus? ReviewerFeedbackStatus { get; private set; }
+        public FeedbackStatus ReviewerFeedbackStatus { get; private set; }
 
-        public Feedback(string? revieweeComment, FeedbackStatus revieweeFeedbackStatus)
+        public Feedback(FeedbackStatus revieweeFeedbackStatus)
         {
             Guard.Against.Null(revieweeFeedbackStatus, nameof(revieweeFeedbackStatus));
 
             FeedbackGuid = Guid.NewGuid();
-            RevieweeComment = revieweeComment;
             RevieweeFeedbackStatus = revieweeFeedbackStatus;
+            this.PotentialLevel = OverallRating.Reviewing;
+            ReviewerFeedbackStatus = FeedbackStatus.Pending;
 
         }
 
@@ -33,9 +34,12 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             RatingScale ratingScale,
             string revieweeRemarks)
         {
-            Guard.Against.Null(question, nameof(question));
+            if (IsTransient())
+            {
+                Guard.Against.Null(question, nameof(question));
 
-            _behaviorMetrics.Add(new BehaviorMetric(question, ratingScale, revieweeRemarks));
+                _behaviorMetrics.Add(new BehaviorMetric(question, ratingScale, revieweeRemarks));
+            }
         }
         internal void SetBehaviorMetricByReviewee(Guid metricGUID,
            RatingScale ratingScale,
@@ -63,12 +67,13 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             PotentialLevel = rating;
             ReviewerComment = reviewerComment;
         }
-        internal void SetReviewee(string revieweeComment, FeedbackStatus feedbackStatus)
+        internal void SetReviewee(string? revieweeComment, FeedbackStatus feedbackStatus)
         {
             Guard.Against.Null(feedbackStatus, nameof(feedbackStatus));
 
             RevieweeFeedbackStatus = feedbackStatus;
             RevieweeComment = revieweeComment;
         }
+
     }
 }

@@ -3,7 +3,7 @@ using OfficePerformanceReview.Domain.PerformanceReview.Entities;
 using OfficePerformanceReview.Domain.PerformanceReview.Enums;
 using OfficeReview.Domain.Questions.Enum;
 using OfficeReview.Shared.Exceptions;
-using System.Collections.Generic;
+
 
 
 namespace OfficePerformanceReview.Domain.PerformanceReview.Root
@@ -45,6 +45,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
             FeedbackStatus = FeedbackStatus.Pending;
             PerformanceOverviewId = performanceOverviewId;
             PerformanceReviewGuid = Guid.NewGuid();
+            this.Feedbacks = new Feedback(FeedbackStatus.Pending);
         }
 
         public void SetPerformanceReview(
@@ -78,6 +79,58 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
             reviewee.SetFeedback(feedbacks);
         }
         #endregion
+        #region Feedback state change
+
+        public void AddBehaviorMetricByReviewee(QuestionFeedback question,
+            RatingScale ratingScale,
+            string revieweeRemarks)
+        {
+
+            Feedbacks.AddBehaviorMetricByReviewee(question, ratingScale, revieweeRemarks);
+        }
+        public void SetBehaviorMetricByReviewee(Guid metricGUID,
+           RatingScale ratingScale,
+           string revieweeRemarks)
+        {
+            this.Feedbacks.SetBehaviorMetricByReviewee(metricGUID, ratingScale, revieweeRemarks);
+        }
+        public void SetReviewee(string? revieweeComment, FeedbackStatus feedbackStatus)
+        {
+            this.Feedbacks.SetReviewee(revieweeComment, feedbackStatus);
+        }
+        public void SetBehaviorMetricByReviewer(Guid metricGUID,
+           RatingScale ratingScale,
+           string reviewerRemarks)
+        {
+            this.Feedbacks.SetBehaviorMetricByReviewer(metricGUID, ratingScale, reviewerRemarks);
+        }
+        public void SetReviewer(FeedbackStatus feedbackStatus,
+          string reviewerComment,
+          OverallRating rating)
+        {
+            this.Feedbacks.SetReviewer(feedbackStatus, reviewerComment, rating);
+        }
+        #endregion
+
+        #region Objectives
+        public void AddObjective(IEnumerable<Objective> objects)
+        {
+            _objectives.AddRange(objects);
+        }
+        public void SetObjective(IEnumerable<Objective> objects)
+        {
+            foreach (var objective in objects)
+            {
+                var single = _objectives.Single(o => o.ObjectiveGuid.Equals(objective.ObjectiveGuid));
+                single.SetObjective(objective.Description, objective.ActionPlan, objective.Timeline, objective.ProgressStatus);
+            }
+        }
+        public void RemoveObjective(IEnumerable<Guid> guids)
+        {
+            _objectives.RemoveAll(x => guids.Contains(x.ObjectiveGuid));
+        }
+        #endregion
+
         #region Helper
         private Reviewee _ValidateReviewee(Guid revieweeGuid)
         {
@@ -86,6 +139,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
                 throw new OfficeReviewDomainException("Reviewee not assign");
             return reviewee;
         }
+
         #endregion
 
 
