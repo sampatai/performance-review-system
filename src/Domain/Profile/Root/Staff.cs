@@ -1,12 +1,13 @@
 ﻿using OfficeReview.Domain.Profile.Enums;
 using OfficeReview.Domain.Questions.Entities;
+using System.Data;
 using System.Net.Mail;
 
 namespace OfficeReview.Domain.Profile.Root;
 
 public class Staff : AuditableEntity, IAggregateRoot
 {
-    private List<Role> _Role = new();
+    private List<Role> _roles = new();
 
 
     protected Staff()
@@ -18,14 +19,14 @@ public class Staff : AuditableEntity, IAggregateRoot
     public string PositionTitle { get; private set; }
     public string Email { get; private set; }
     public Team Team { get; private set; }
-    public IReadOnlyList<Role> Role => _Role.AsReadOnly();
+    public IReadOnlyList<Role> Roles => _roles.AsReadOnly();
     public bool IsDeleted { get; private set; }
     public bool IsActive { get; private set; }
 
     public Staff(string name, string position,
-        string email, Role role, Team team)
+        string email, IEnumerable<Role> roles, Team team)
     {
-        Guard.Against.Null(role, nameof(role));
+        Guard.Against.Null(roles, nameof(roles));
         Guard.Against.Null(team, nameof(team));
         Guard.Against.NullOrEmpty(name, nameof(name));
         Guard.Against.NullOrEmpty(position, nameof(position));
@@ -34,22 +35,25 @@ public class Staff : AuditableEntity, IAggregateRoot
         this.Name = name;
         this.PositionTitle = position;
         this.Email = email;
-        Role = role;
+        this.Team = team;
         IsActive = true;
         IsDeleted = false;
+        _roles.AddRange(roles);
     }
 
     public void SetStaff(string name, string position,
-         Role role, Team team)
+         IEnumerable<Role> roles, Team team)
     {
-        Guard.Against.Null(role, nameof(role));
+        Guard.Against.Null(roles, nameof(roles));
         Guard.Against.Null(team, nameof(team));
         Guard.Against.NullOrEmpty(name, nameof(name));
         Guard.Against.NullOrEmpty(position, nameof(position));
         this.StaffGuid = Guid.NewGuid();
         this.Name = name;
         this.PositionTitle = position;
-        Role = role;
+        this.Team = team;
+        _roles.Clear();
+        _roles.AddRange(roles);
     }
     public void SetDelete()
     {
@@ -66,7 +70,7 @@ public class Staff : AuditableEntity, IAggregateRoot
     }
     public void SetChangeRole(Role role)
     {
-        this.Role = role;
+        _roles.Add(role);
     }
 
     #region helper
