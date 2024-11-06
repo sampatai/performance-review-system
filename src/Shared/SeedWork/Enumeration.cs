@@ -63,4 +63,32 @@ public abstract class Enumeration : IComparable
     }
 
     public int CompareTo(object other) => Id.CompareTo(((Enumeration)other).Id);
+
+    public static T GetRandomEnumValue<T>() where T : Enumeration
+    {
+        // Get all static fields of type T
+        var values = typeof(T).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                              .Where(f => f.FieldType == typeof(T))
+                              .Select(f => f.GetValue(null))
+                              .Cast<T>()
+                              .ToList();
+
+        var random = new Random();
+        return values[random.Next(values.Count)];
+    }
+    public static IEnumerable<T> GetRandomEnumValues<T>() where T : Enumeration
+    {
+        // Get all static fields of type T (the predefined values in your enum-like class)
+        var values = typeof(T).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+                              .Where(f => f.FieldType == typeof(T))
+                              .Select(f => f.GetValue(null))
+                              .Cast<T>()
+                              .ToList();
+
+        var random = new Random();
+        var randomValue = values[random.Next(values.Count)];
+
+        // Return the single value as an IEnumerable<T>
+        return new[] { randomValue };
+    }
 }
