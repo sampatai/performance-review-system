@@ -1,10 +1,4 @@
-﻿using AutoFixture;
-using Bogus;
-using FluentAssertions;
-using OfficeReview.Domain.Profile.Enums;
-using OfficeReview.Domain.Profile.Root;
-using OfficeReview.Shared.SeedWork;
-using System.Net.Mail;
+﻿
 
 
 namespace OfficePerformanceReview.DomainTest.ProfileTest

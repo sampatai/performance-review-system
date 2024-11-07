@@ -2,30 +2,22 @@
 using Bogus;
 using FluentAssertions;
 using OfficeReview.Domain.Profile.Enums;
-using OfficeReview.Domain.Profile.Root;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace OfficePerformanceReview.DomainTest.ProfileTest
 {
     public class StaffTests
     {
         private Fixture _fixture;
-        private Faker _faker;
+       private Staff _staff;
 
         [SetUp]
         public void Setup()
         {
             _fixture = new Fixture();
-            _faker = new Faker();
+            _staff= TestHelpers.GetStaff();
         }
 
         [Test]
-        public void init_should_be_successed()
+        public void init_should_be_succeed()
         {
             // Arrange
             var staffFake = TestHelpers.GetStaffParam();
@@ -60,73 +52,73 @@ namespace OfficePerformanceReview.DomainTest.ProfileTest
         }
 
         [Test]
-        public void setstaff_should_be_successed()
+        public void setstaff_should_be_succeed()
         {
             // Arrange
-            var staff = TestHelpers.GetStaff();
+           
 
             var newStaff = TestHelpers.GetStaffParam();
             // Act
-            staff.SetStaff(newStaff.Name, newStaff.Position, newStaff.Roles, newStaff.Team);
+            _staff.SetStaff(newStaff.Name, newStaff.Position, newStaff.Roles, newStaff.Team);
 
             // Assert
-            TestHelpers.AssertNotNullOrEmpty(staff.Name, nameof(staff.Name));
-            TestHelpers.AssertNotNullOrEmpty(staff.PositionTitle, nameof(staff.PositionTitle));
-            staff.Roles.Should().Equal(newStaff.Roles);
-            staff.Team.Should().Be(newStaff.Team);
+            TestHelpers.AssertNotNullOrEmpty(_staff.Name, nameof(_staff.Name));
+            TestHelpers.AssertNotNullOrEmpty(_staff.PositionTitle, nameof(_staff.PositionTitle));
+            _staff.Roles.Should().Equal(newStaff.Roles);
+            _staff.Team.Should().Be(newStaff.Team);
         }
 
         [Test]
-        public void setdelete_should_be_successed()
+        public void setdelete_should_be_succeed()
         {
             // Arrange
-            var staff = TestHelpers.GetStaff();
+           
             // Act
-            staff.SetDelete();
+            _staff.SetDelete();
 
             // Assert
-            staff.IsDeleted.Should().BeTrue();
+            _staff.IsDeleted.Should().BeTrue();
         }
 
         [Test]
         public void SetDeActivate_ShouldSetIsActiveToFalse()
         {
             // Arrange
-            var staff = TestHelpers.GetStaff();
+           
 
             // Act
-            staff.SetDeActivate();
+            _staff.SetDeActivate();
 
             // Assert
-            staff.IsActive.Should().BeFalse();
+            _staff.IsActive.Should().BeFalse();
         }
 
         [Test]
         public void ChangeTeam_ShouldUpdateTeamProperty()
         {
             // Arrange
-            var staff = TestHelpers.GetStaff();
+            
             var newTeam = _fixture.Create<Team>();
 
             // Act
-            staff.ChangeTeam(newTeam);
+            _staff.ChangeTeam(newTeam);
 
             // Assert
-            staff.Team.Should().Be(newTeam);
+            _staff.Team.Should().Be(newTeam);
         }
 
         [Test]
         public void SetChangeRole_ShouldAddNewRoleToRolesList()
         {
             // Arrange
-            var staff = TestHelpers.GetStaff();
+            
             var newRole = _fixture.Create<Role>();
 
             // Act
-            staff.SetChangeRole(newRole);
+            _staff.SetChangeRole(newRole);
 
             // Assert
-            staff.Roles.Should().Contain(newRole);
+            _staff.Roles.Should().Contain(newRole);
         }
 
        
