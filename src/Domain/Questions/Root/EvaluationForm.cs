@@ -55,27 +55,26 @@ namespace OfficeReview.Domain.Questions.Root
             single.SetQuestion(question);
 
         }
-        public void SetDeActivateQuestion(IEnumerable<Question> questions)
+        public void SetDeActivateQuestion(Guid questionGuid)
         {
-            foreach (Question question in questions
-                .Where(x => x.QuestionGuid != Guid.Empty))
-            {
-                var single = _Questions
-                      .Where(x => x.IsActive && x.QuestionGuid == question.QuestionGuid)
-                      .SingleOrDefault()!;
-                single.SetDeActivate();
-            }
+
+            var single = _Questions
+                  .Where(x => x.IsActive && x.QuestionGuid == questionGuid)
+                  .SingleOrDefault();
+            if (single is null)
+                throw new OfficeReviewDomainException("Invalid question Guid");
+            single.SetDeActivate();
+
         }
-        public void SetDeleteQuestion(IEnumerable<Question> questions)
+        public void SetDeleteQuestion(Guid questionGuid)
         {
-            foreach (Question question in questions
-                .Where(x => x.QuestionGuid != Guid.Empty))
-            {
-                var single = _Questions
-                      .Where(x => x.IsActive && x.QuestionGuid == question.QuestionGuid)
-                      .SingleOrDefault()!;
-                single.SetDelete();
-            }
+            var single = _Questions
+                       .Where(x => x.IsActive && x.QuestionGuid == questionGuid)
+                       .SingleOrDefault();
+            if (single is null)
+                throw new OfficeReviewDomainException("Invalid question Guid");
+            single.SetDelete();
         }
     }
 }
+

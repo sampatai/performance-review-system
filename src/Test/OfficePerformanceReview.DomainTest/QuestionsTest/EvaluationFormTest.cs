@@ -17,6 +17,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
                 ))
             );
             _evaluationForm = Fixture.Create<EvaluationForm>();
+
         }
 
         [Test]
@@ -130,7 +131,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             _evaluationForm.AddQuestion(new[] { question });
 
             // Act
-            _evaluationForm.SetDeActivateQuestion(new[] { question });
+            _evaluationForm.SetDeActivateQuestion(question.QuestionGuid);
 
             // Assert
             _evaluationForm.Questions.First().IsActive.Should().BeFalse();
@@ -145,7 +146,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             _evaluationForm.AddQuestion(new[] { question });
 
             // Act
-            _evaluationForm.SetDeleteQuestion(new[] { question });
+            _evaluationForm.SetDeleteQuestion(question.QuestionGuid);
 
             // Assert
             _evaluationForm.Questions.First().IsDeleted.Should().BeTrue();
