@@ -1,5 +1,6 @@
 ﻿using OfficeReview.Domain.Questions.Entities;
 using OfficeReview.Domain.Questions.Enum;
+using OfficeReview.Shared.Exceptions;
 namespace OfficeReview.Domain.Questions.Root
 {
     public class EvaluationForm : AuditableEntity, IAggregateRoot
@@ -44,16 +45,15 @@ namespace OfficeReview.Domain.Questions.Root
         {
             _Questions.AddRange(questions);
         }
-        public void SetQuestion(IEnumerable<Question> questions)
+        public void SetQuestion(Guid questionGuid, string question)
         {
-            foreach (Question question in questions
-                .Where(x => x.QuestionGuid != Guid.Empty))
-            {
-                var single = _Questions
-                      .Where(x => x.IsActive && x.QuestionGuid == question.QuestionGuid)
-                      .SingleOrDefault()!;
-                single.SetQuestion(question.QuestionText);
-            }
+            var single = _Questions
+                  .Where(x => x.IsActive && x.QuestionGuid == questionGuid)
+                  .SingleOrDefault();
+            if (single is null)
+                throw new OfficeReviewDomainException("Invalid question Guid");
+            single.SetQuestion(question);
+
         }
         public void SetDeActivateQuestion(IEnumerable<Question> questions)
         {

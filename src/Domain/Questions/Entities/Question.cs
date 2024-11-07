@@ -1,5 +1,4 @@
-﻿using System.Xml.Linq;
-
+﻿
 namespace OfficeReview.Domain.Questions.Entities
 {
     public class Question : Entity
@@ -19,6 +18,7 @@ namespace OfficeReview.Domain.Questions.Entities
             IsActive = true;
             IsDeleted = false;
             QuestionText = question;
+            QuestionGuid = Guid.NewGuid();
 
         }
         internal void SetQuestion(string question)
