@@ -24,6 +24,9 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             Guard.Against.Null(employeeFeedbackStatus, nameof(employeeFeedbackStatus));
 
             FeedbackGuid = Guid.NewGuid();
+            RevieweeFeedbackStatus = revieweeFeedbackStatus;
+            this.PotentialLevel = OverallRating.Reviewing;
+            ReviewerFeedbackStatus = FeedbackStatus.Pending;
             EmployeeComment = employeeComment;
             EmployeeFeedbackStatus = employeeFeedbackStatus;
 
@@ -33,7 +36,9 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             RatingScale ratingScale,
             string employeeRemarks)
         {
-            Guard.Against.Null(question, nameof(question));
+            if (IsTransient())
+            {
+                Guard.Against.Null(question, nameof(question));
 
             _behaviorMetrics.Add(new BehaviorMetric(question, ratingScale, employeeRemarks));
         }
@@ -63,12 +68,13 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             PotentialLevel = rating;
             ReviewerComment = reviewerComment;
         }
-        internal void SetEmployee(string revieweeComment, FeedbackStatus feedbackStatus)
+        internal void SetEmployee(string employeeComment, FeedbackStatus feedbackStatus)
         {
             Guard.Against.Null(feedbackStatus, nameof(feedbackStatus));
 
             EmployeeFeedbackStatus = feedbackStatus;
-            EmployeeComment = revieweeComment;
+            EmployeeComment = employeeComment;
         }
+
     }
 }
