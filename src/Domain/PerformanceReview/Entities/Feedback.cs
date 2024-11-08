@@ -19,17 +19,12 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public FeedbackStatus EmployeeFeedbackStatus { get; private set; }
         public FeedbackStatus? ManagerFeedbackStatus { get; private set; }
 
-        public Feedback(string? employeeComment, FeedbackStatus employeeFeedbackStatus)
+        public Feedback(FeedbackStatus employeeFeedbackStatus)
         {
             Guard.Against.Null(employeeFeedbackStatus, nameof(employeeFeedbackStatus));
-
             FeedbackGuid = Guid.NewGuid();
-            RevieweeFeedbackStatus = revieweeFeedbackStatus;
             this.PotentialLevel = OverallRating.Reviewing;
-            ReviewerFeedbackStatus = FeedbackStatus.Pending;
-            EmployeeComment = employeeComment;
-            EmployeeFeedbackStatus = employeeFeedbackStatus;
-
+            EmployeeFeedbackStatus = FeedbackStatus.Pending;
         }
 
         internal void AddBehaviorMetricByEmployee(QuestionFeedback question,
@@ -40,7 +35,8 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             {
                 Guard.Against.Null(question, nameof(question));
 
-            _behaviorMetrics.Add(new BehaviorMetric(question, ratingScale, employeeRemarks));
+                _behaviorMetrics.Add(new BehaviorMetric(question, ratingScale, employeeRemarks));
+            }
         }
         internal void SetBehaviorMetricByEmployee(Guid metricGUID,
            RatingScale ratingScale,
@@ -68,7 +64,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             PotentialLevel = rating;
             ReviewerComment = reviewerComment;
         }
-        internal void SetEmployee(string employeeComment, FeedbackStatus feedbackStatus)
+        internal void SetEmployee(string? employeeComment, FeedbackStatus feedbackStatus)
         {
             Guard.Against.Null(feedbackStatus, nameof(feedbackStatus));
 

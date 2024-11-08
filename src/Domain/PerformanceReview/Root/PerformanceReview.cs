@@ -79,34 +79,34 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         #endregion
         #region Feedback state change
 
-        public void AddBehaviorMetricByReviewee(QuestionFeedback question,
+        public void AddBehaviorMetricByEmployee(QuestionFeedback question,
             RatingScale ratingScale,
             string revieweeRemarks)
         {
 
-            Feedbacks.AddBehaviorMetricByReviewee(question, ratingScale, revieweeRemarks);
+            Feedbacks.AddBehaviorMetricByEmployee(question, ratingScale, revieweeRemarks);
         }
-        public void SetBehaviorMetricByReviewee(Guid metricGUID,
+        public void SetBehaviorMetricByEmployee(Guid metricGUID,
            RatingScale ratingScale,
            string revieweeRemarks)
         {
-            this.Feedbacks.SetBehaviorMetricByReviewee(metricGUID, ratingScale, revieweeRemarks);
+            this.Feedbacks.SetBehaviorMetricByEmployee(metricGUID, ratingScale, revieweeRemarks);
         }
-        public void SetReviewee(string? revieweeComment, FeedbackStatus feedbackStatus)
+        public void SetEmployee(string? revieweeComment, FeedbackStatus feedbackStatus)
         {
-            this.Feedbacks.SetReviewee(revieweeComment, feedbackStatus);
+            this.Feedbacks.SetEmployee(revieweeComment, feedbackStatus);
         }
-        public void SetBehaviorMetricByReviewer(Guid metricGUID,
+        public void SetBehaviorMetricByManager(Guid metricGUID,
            RatingScale ratingScale,
            string reviewerRemarks)
         {
-            this.Feedbacks.SetBehaviorMetricByReviewer(metricGUID, ratingScale, reviewerRemarks);
+            this.Feedbacks.SetBehaviorMetricByManager(metricGUID, ratingScale, reviewerRemarks);
         }
-        public void SetReviewer(FeedbackStatus feedbackStatus,
+        public void SetManager(FeedbackStatus feedbackStatus,
           string reviewerComment,
           OverallRating rating)
         {
-            this.Feedbacks.SetReviewer(feedbackStatus, reviewerComment, rating);
+            this.Feedbacks.SetManager(feedbackStatus, reviewerComment, rating);
         }
         #endregion
 
