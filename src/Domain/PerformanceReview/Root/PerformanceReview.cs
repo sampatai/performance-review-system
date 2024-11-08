@@ -130,11 +130,11 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         #endregion
 
         #region Helper
-        private Reviewer _ValidateReviewee(Guid revieweeGuid)
+        private Reviewer _ValidateReviewee(Guid reviewerGuid)
         {
-            var reviewee = _Reviewers.Single(x => x.ReviewerGuid == revieweeGuid);
+            var reviewee = _Reviewers.Single(x => x.ReviewerGuid == reviewerGuid);
             if (reviewee == null)
-                throw new OfficeReviewDomainException("Reviewee not assign");
+                throw new OfficeReviewDomainException("Reviewer not assign");
             return reviewee;
         }
 
