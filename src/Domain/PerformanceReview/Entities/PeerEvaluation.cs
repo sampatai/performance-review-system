@@ -3,9 +3,9 @@ using OfficePerformanceReview.Domain.PerformanceReview.Enums;
 using OfficeReview.Domain.Questions.Enum;
 namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
 {
-    public class Reviewer : Entity
+    public class PeerEvaluation : Entity
     {
-        public Guid ReviewerGuid { get; private set; }
+        public Guid PeerEvaluationGuid { get; private set; }
         public NameValue CompletedBy { get; private set; }
         public DateOnly? ReviewDate { get; private set; }
         public DateOnly DeadLine { get; private set; }
@@ -15,9 +15,9 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public FeedbackStatus FeedbackStatus { get; private set; }
 
         public bool IsActive { get; private set; }
-        protected Reviewer() { }
+        protected PeerEvaluation() { }
 
-        public Reviewer(int staffId, string name, DateOnly deadLine)
+        public PeerEvaluation(int staffId, string name, DateOnly deadLine)
         {
 
             Guard.Against.Null(deadLine, nameof(deadLine));
@@ -28,7 +28,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             DeadLine = deadLine;
         }
 
-        internal void SetReviewer(int staffId, string name, DateOnly reviewDate)
+        internal void SetPeerEvaluation(int staffId, string name, DateOnly reviewDate)
         {
             Guard.Against.Null(reviewDate, nameof(reviewDate));
             Guard.Against.OutOfRange(reviewDate, nameof(reviewDate), DateOnly.MinValue, DateOnly.MaxValue);

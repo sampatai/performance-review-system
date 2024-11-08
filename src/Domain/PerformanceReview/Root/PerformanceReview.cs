@@ -18,8 +18,8 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         public DateTime ReviewDate { get; private set; }
         public FeedbackStatus FeedbackStatus { get; private set; }
 
-        public List<Reviewer> _Reviewers = new();
-        public IReadOnlyList<Reviewer> Reviewers => _Reviewers.AsReadOnly();
+        public List<PeerEvaluation> _evaluators = new();
+        public IReadOnlyList<PeerEvaluation> Evaluators => _evaluators.AsReadOnly();
         public Feedback Feedbacks { get; private set; }
 
         private List<Objective> _objectives = new();
@@ -57,56 +57,56 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
             this.AppraisedName = appraisedName;
         }
 
-        #region reviewee state change
-        public void AddReviewees(int completedById, string completedBy, DateOnly deadLine)
+        #region employee state change
+        public void AddPeerEvaluation(int completedById, string completedBy, DateOnly deadLine)
         {
-            _Reviewers.Add(new Reviewer(completedById, completedBy, deadLine));
+            _evaluators.Add(new PeerEvaluation(completedById, completedBy, deadLine));
         }
 
-        public void SetReviewee(Guid completedGuid, int completedById, string completedBy, DateOnly deadLine)
+        public void SetPeerEvaluation(Guid peerEvaluationGuid, int completedById, string completedBy, DateOnly deadLine)
         {
-            var reviewee = _ValidateReviewee(completedGuid);
-            if (reviewee == null)
-                throw new OfficeReviewDomainException("Reviewee not assign");
-            reviewee.SetReviewer(completedById, completedBy, deadLine);
+            var employee = _ValidatePeerEvaluation(peerEvaluationGuid);
+            if (employee == null)
+                throw new OfficeReviewDomainException("Evaluator not assign");
+            employee.SetPeerEvaluation(completedById, completedBy, deadLine);
         }
 
-        public void SetFeedback(Guid revieweeGuid, IEnumerable<QuestionFeedback> feedbacks)
+        public void SetFeedback(Guid peerEvaluationGuid, IEnumerable<QuestionFeedback> feedbacks)
         {
-            var reviewee = _ValidateReviewee(revieweeGuid);
-            reviewee.SetFeedback(feedbacks);
+            var employee = _ValidatePeerEvaluation(peerEvaluationGuid);
+            employee.SetFeedback(feedbacks);
         }
         #endregion
         #region Feedback state change
 
         public void AddBehaviorMetricByEmployee(QuestionFeedback question,
             RatingScale ratingScale,
-            string revieweeRemarks)
+            string employeeRemarks)
         {
 
-            Feedbacks.AddBehaviorMetricByEmployee(question, ratingScale, revieweeRemarks);
+            Feedbacks.AddBehaviorMetricByEmployee(question, ratingScale, employeeRemarks);
         }
         public void SetBehaviorMetricByEmployee(Guid metricGUID,
            RatingScale ratingScale,
-           string revieweeRemarks)
+           string employeeRemarks)
         {
-            this.Feedbacks.SetBehaviorMetricByEmployee(metricGUID, ratingScale, revieweeRemarks);
+            this.Feedbacks.SetBehaviorMetricByEmployee(metricGUID, ratingScale, employeeRemarks);
         }
-        public void SetEmployee(string? revieweeComment, FeedbackStatus feedbackStatus)
+        public void SetEmployee(string? employeeComment, FeedbackStatus feedbackStatus)
         {
-            this.Feedbacks.SetEmployee(revieweeComment, feedbackStatus);
+            this.Feedbacks.SetEmployee(employeeComment, feedbackStatus);
         }
         public void SetBehaviorMetricByManager(Guid metricGUID,
            RatingScale ratingScale,
-           string reviewerRemarks)
+           string managerRemarks)
         {
-            this.Feedbacks.SetBehaviorMetricByManager(metricGUID, ratingScale, reviewerRemarks);
+            this.Feedbacks.SetBehaviorMetricByManager(metricGUID, ratingScale, managerRemarks);
         }
         public void SetManager(FeedbackStatus feedbackStatus,
-          string reviewerComment,
+          string managerComment,
           OverallRating rating)
         {
-            this.Feedbacks.SetManager(feedbackStatus, reviewerComment, rating);
+            this.Feedbacks.SetManager(feedbackStatus, managerComment, rating);
         }
         #endregion
 
@@ -130,12 +130,12 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         #endregion
 
         #region Helper
-        private Reviewer _ValidateReviewee(Guid reviewerGuid)
+        private PeerEvaluation _ValidatePeerEvaluation(Guid peerEvaluationGuid)
         {
-            var reviewee = _Reviewers.Single(x => x.ReviewerGuid == reviewerGuid);
-            if (reviewee == null)
-                throw new OfficeReviewDomainException("Reviewer not assign");
-            return reviewee;
+            var employee = _evaluators.Single(x => x.PeerEvaluationGuid == peerEvaluationGuid);
+            if (employee == null)
+                throw new OfficeReviewDomainException("Evaluator not assign");
+            return employee;
         }
 
         #endregion
