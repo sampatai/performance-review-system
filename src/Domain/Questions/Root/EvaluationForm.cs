@@ -1,4 +1,5 @@
-﻿using OfficeReview.Domain.Questions.Entities;
+﻿using OfficePerformanceReview.Domain.Questions.Enum;
+using OfficeReview.Domain.Questions.Entities;
 using OfficeReview.Domain.Questions.Enum;
 using OfficeReview.Shared.Exceptions;
 namespace OfficeReview.Domain.Questions.Root
@@ -45,14 +46,14 @@ namespace OfficeReview.Domain.Questions.Root
         {
             _Questions.AddRange(questions);
         }
-        public void SetQuestion(Guid questionGuid, string question)
+        public void SetQuestion(Guid questionGuid, string question,QuestionType questionType)
         {
             var single = _Questions
                   .Where(x => x.IsActive && x.QuestionGuid == questionGuid)
                   .SingleOrDefault();
             if (single is null)
                 throw new OfficeReviewDomainException("Invalid question Guid");
-            single.SetQuestion(question);
+            single.SetQuestion(question, questionType);
 
         }
         public void SetDeActivateQuestion(Guid questionGuid)

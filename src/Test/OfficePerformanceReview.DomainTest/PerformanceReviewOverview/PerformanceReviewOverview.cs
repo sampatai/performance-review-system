@@ -42,7 +42,7 @@ namespace OfficePerformanceReview.DomainTest.PerformanceReviewOverviewTest
             reviewOverview.ReviewDate.Should().BeEquivalentTo(_dateRange);
             reviewOverview.Year.Should().Be(year);
             reviewOverview.ReviewSession.Should().Be(session);
-            reviewOverview.FeedBackGivers.Should().BeEmpty();
+            reviewOverview.Managers.Should().BeEmpty();
         }
 
         [Test]
@@ -73,10 +73,10 @@ namespace OfficePerformanceReview.DomainTest.PerformanceReviewOverviewTest
             };
 
             // Act
-            _performanceReviewOverview.SetFeedBackGiver(feedbackGivers);
+            _performanceReviewOverview.SetManagers(feedbackGivers);
 
             // Assert
-            _performanceReviewOverview.FeedBackGivers.Should().BeEquivalentTo(feedbackGivers);
+            _performanceReviewOverview.Managers.Should().BeEquivalentTo(feedbackGivers);
         }
 
         [Test]

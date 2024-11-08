@@ -4,7 +4,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
 {
     public class PerformanceReviewOverview : AuditableEntity, IAggregateRoot
     {
-        private List<NameValue> _FeedBackGivers = new();
+        private List<NameValue> _managers = new();
 
         protected PerformanceReviewOverview()
         {
@@ -14,7 +14,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         public DateRange ReviewDate { get; private set; }
         public string Year { get; private set; }
         public Session ReviewSession { get; private set; }
-        public IReadOnlyList<NameValue> FeedBackGivers => _FeedBackGivers.AsReadOnly();
+        public IReadOnlyList<NameValue> Managers => _managers.AsReadOnly();
 
         public PerformanceReviewOverview(DateRange reviewDate, string year, Session session)
         {
@@ -37,10 +37,10 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
             this.Year = year;
             this.ReviewDate = reviewDate;
         }
-        public void SetFeedBackGiver(List<NameValue> feedBackGivers)
+        public void SetManagers(List<NameValue> managers)
         {
-            _FeedBackGivers.Clear();
-            _FeedBackGivers.AddRange(feedBackGivers);
+            _managers.Clear();
+            _managers.AddRange(managers);
         }
 
     }
