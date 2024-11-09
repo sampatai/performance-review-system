@@ -1,5 +1,6 @@
 ﻿using OfficeReview.Domain.Questions.Enum;
 using OfficeReview.Domain.Questions.Entities;
+using OfficePerformanceReview.Domain.Questions.Enum;
 
 
 namespace OfficePerformanceReview.DomainTest.QuestionsTest
@@ -7,6 +8,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
     internal class EvaluationFormTest : TestBase
     {
         private EvaluationForm _evaluationForm;
+        private Question _question;
         public override void ExtendSetup()
         {
             base.ExtendSetup();
@@ -17,7 +19,13 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
                 ))
             );
             _evaluationForm = Fixture.Create<EvaluationForm>();
-
+            Fixture.Customize<Question>(composer => composer
+              .FromFactory(() => new Question(
+                  question: Faker.Lorem.Sentence(),
+                  questionType: Enumeration.GetRandomEnumValue<QuestionType>()
+              ))
+          );
+            _question = Fixture.Create<Question>();
         }
 
         [Test]
@@ -60,7 +68,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
         public void SetEvaluationForm_Should_Be_Succeed()
         {
             // Arrange
-            
+
             var newName = Faker.Lorem.Sentence();
 
             // Act
@@ -75,7 +83,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
         public void SetEvaluationForm_Should_Throw_Exception_If_Name_Is_Null_Or_Empty(string? name)
         {
             // Arrange
-            
+
 
             // Act
             Action action = () => _evaluationForm.SetEvaluationForm(name);
@@ -93,7 +101,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
                     .WithMessage("Required input name was empty. (Parameter 'name')");
             }
         }
-       
+
         [Test]
         public void SetDelete_Should_Set_IsDeleted_To_True()
         {
@@ -121,13 +129,13 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             //Assert
             _evaluationForm.Questions.Should().HaveCount(3);
         }
- 
+
         [Test]
         public void SetDeActivateQuestion_Should_Succeed()
         {
             // Arrange
-           
-            var question = new Question(Faker.Lorem.Sentence());
+
+            var question = _question;
             _evaluationForm.AddQuestion(new[] { question });
 
             // Act
@@ -142,7 +150,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
         {
             // Arrange
 
-            var question = new Question(Faker.Lorem.Sentence());
+            var question = _question;
             _evaluationForm.AddQuestion(new[] { question });
 
             // Act
@@ -157,11 +165,11 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
         {
             // Arrange
 
-            var question = new Question(Faker.Lorem.Sentence());
+            var question = _question;
             _evaluationForm.AddQuestion(new[] { question });
             var newQuestion = Faker.Lorem.Sentence();
             // Act
-            _evaluationForm.SetQuestion(question.QuestionGuid, newQuestion);
+            _evaluationForm.SetQuestion(question.QuestionGuid, newQuestion, Enumeration.GetRandomEnumValue<QuestionType>());
 
             // Assert
 

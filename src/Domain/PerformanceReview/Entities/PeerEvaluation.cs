@@ -3,10 +3,10 @@ using OfficePerformanceReview.Domain.PerformanceReview.Enums;
 using OfficeReview.Domain.Questions.Enum;
 namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
 {
-    public class Reviewee : Entity
+    public class PeerEvaluation : Entity
     {
-        public Guid RevieweeGuid { get; private set; }
-        public NameValue ReviewBy { get; private set; }
+        public Guid PeerEvaluationGuid { get; private set; }
+        public NameValue CompletedBy { get; private set; }
         public DateOnly? ReviewDate { get; private set; }
         public DateOnly DeadLine { get; private set; }
         public FormEvaluation EvaluationType { get; private set; }
@@ -15,25 +15,25 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public FeedbackStatus FeedbackStatus { get; private set; }
 
         public bool IsActive { get; private set; }
-        protected Reviewee() { }
+        protected PeerEvaluation() { }
 
-        public Reviewee(int staffId, string name, DateOnly deadLine)
+        public PeerEvaluation(int staffId, string name, DateOnly deadLine)
         {
 
             Guard.Against.Null(deadLine, nameof(deadLine));
             EvaluationType = FormEvaluation.PeerEvaluation;
-            ReviewBy = new NameValue(staffId, name);
+            CompletedBy = new NameValue(staffId, name);
             FeedbackStatus = FeedbackStatus.Pending;
             IsActive = true;
             DeadLine = deadLine;
         }
 
-        internal void SetReviewee(int staffId, string name, DateOnly reviewDate)
+        internal void SetPeerEvaluation(int staffId, string name, DateOnly reviewDate)
         {
             Guard.Against.Null(reviewDate, nameof(reviewDate));
             Guard.Against.OutOfRange(reviewDate, nameof(reviewDate), DateOnly.MinValue, DateOnly.MaxValue);
             ReviewDate = reviewDate;
-            ReviewBy = new NameValue(staffId, name);
+            CompletedBy = new NameValue(staffId, name);
 
             _EvaluateFeedbackStatus();
         }
