@@ -26,6 +26,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             FeedbackStatus = FeedbackStatus.Pending;
             IsActive = true;
             DeadLine = deadLine;
+            PeerEvaluationGuid = Guid.NewGuid();
         }
 
         internal void SetPeerEvaluation(int staffId, string name, DateOnly reviewDate)

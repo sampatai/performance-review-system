@@ -1,8 +1,4 @@
-﻿using AutoFixture;
-using Bogus;
-
-
-namespace OfficePerformanceReview.DomainTest.Common
+﻿namespace OfficePerformanceReview.DomainTest.Common
 {
     [TestFixture]
     public abstract class TestBase

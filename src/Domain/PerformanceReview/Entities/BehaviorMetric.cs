@@ -33,7 +33,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             Guard.Against.Null(ratingScale, nameof(ratingScale));
             Guard.Against.NullOrEmpty(managerRemarks, nameof(managerRemarks));
             ManagerRating = ratingScale;
-            EmployeeRemarks = managerRemarks;
+            ManagerRemarks = managerRemarks;
         }
         internal void SetBehaviorMetric(
             RatingScale ratingScale,
