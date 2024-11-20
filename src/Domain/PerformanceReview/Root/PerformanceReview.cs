@@ -115,13 +115,15 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         {
             _objectives.AddRange(objects);
         }
-        public void SetObjective(IEnumerable<Objective> objects)
+        public void SetObjective(string description,
+            string actionPlan,
+            DateRange timeline,
+            ObjectiveStatus objectiveStatus,Guid ObjectiveGuid)
         {
-            foreach (var objective in objects)
-            {
-                var single = _objectives.Single(o => o.ObjectiveGuid.Equals(objective.ObjectiveGuid));
-                single.SetObjective(objective.Description, objective.ActionPlan, objective.Timeline, objective.ProgressStatus);
-            }
+           
+                var single = _objectives.Single(o => o.ObjectiveGuid.Equals(ObjectiveGuid));
+                single.SetObjective(description, actionPlan, timeline, objectiveStatus);
+            
         }
         public void RemoveObjective(IEnumerable<Guid> guids)
         {
