@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficePerformanceReview.Dom
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7A520394-D2C2-4B33-8F5C-22A8B9B02265}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficePerformanceReview.DomainTest", "Test\OfficePerformanceReview.DomainTest\OfficePerformanceReview.DomainTest.csproj", "{7FB4CC5F-F4E7-4162-B5AC-E5D2C5DB6E2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficePerformanceReview.DomainTest", "Test\OfficePerformanceReview.DomainTest\OfficePerformanceReview.DomainTest.csproj", "{7FB4CC5F-F4E7-4162-B5AC-E5D2C5DB6E2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficePerformanceReview.Infrastructure", "OfficePerformanceReview.Infrastructure\OfficePerformanceReview.Infrastructure.csproj", "{6FB93CA8-3235-46D2-A698-19042352FBB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{7FB4CC5F-F4E7-4162-B5AC-E5D2C5DB6E2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FB4CC5F-F4E7-4162-B5AC-E5D2C5DB6E2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FB4CC5F-F4E7-4162-B5AC-E5D2C5DB6E2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FB93CA8-3235-46D2-A698-19042352FBB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FB93CA8-3235-46D2-A698-19042352FBB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FB93CA8-3235-46D2-A698-19042352FBB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FB93CA8-3235-46D2-A698-19042352FBB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
