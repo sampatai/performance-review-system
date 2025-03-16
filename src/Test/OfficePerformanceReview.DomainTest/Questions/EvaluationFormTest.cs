@@ -7,18 +7,18 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
 {
     internal class EvaluationFormTest : TestBase
     {
-        private EvaluationForm _evaluationForm;
+        private EvaluationFormTemplate _evaluationForm;
         private Question _question;
         public override void ExtendSetup()
         {
             base.ExtendSetup();
-            Fixture.Customize<EvaluationForm>(composer => composer
-                .FromFactory(() => new EvaluationForm(
+            Fixture.Customize<EvaluationFormTemplate>(composer => composer
+                .FromFactory(() => new EvaluationFormTemplate(
                     name: Faker.Lorem.Sentence(),
                     formEvaluation: Enumeration.GetRandomEnumValue<FormEvaluation>()
                 ))
             );
-            _evaluationForm = Fixture.Create<EvaluationForm>();
+            _evaluationForm = Fixture.Create<EvaluationFormTemplate>();
             Fixture.Customize<Question>(composer => composer
               .FromFactory(() => new Question(
                   question: Faker.Lorem.Sentence(),
@@ -35,7 +35,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             var name = Faker.Lorem.Sentence();
             var evaluationType = FormEvaluation.SelfManagerEvaluation;
             // Act
-            var evaluationForm = new EvaluationForm(name, evaluationType);
+            var evaluationForm = new EvaluationFormTemplate(name, evaluationType);
             //Assert
             evaluationForm.Name.Should().Be(name);
             evaluationForm.IsDeleted.Should().BeFalse();
@@ -50,7 +50,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
         public void EvaluationForm_Should_Throw_Exception_With_Invalid_Name(string? name)
         {
             // Act
-            Action action = () => new EvaluationForm(name, FormEvaluation.SelfManagerEvaluation);
+            Action action = () => new EvaluationFormTemplate(name, FormEvaluation.SelfManagerEvaluation);
 
             // Assert
             if (name == null)
