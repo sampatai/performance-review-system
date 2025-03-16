@@ -5,7 +5,7 @@ namespace OfficePerformanceReview.Domain.Common.ValueObjects
 {
     public class QuestionFeedback : ValueObject
     {
-        public int QuestionId { get; private set; }
+        public long QuestionId { get; private set; }
         public string QuestionText { get; private set; }
         public string Text { get; private set; }
         public RatingScale? RatingScale { get; private set; }

@@ -2,13 +2,13 @@
 using OfficeReview.Domain.Questions.Entities;
 using OfficePerformanceReview.Domain.Questions.Enum;
 
-
 namespace OfficePerformanceReview.DomainTest.QuestionsTest
 {
     internal class EvaluationFormTest : TestBase
     {
         private EvaluationFormTemplate _evaluationForm;
         private Question _question;
+
         public override void ExtendSetup()
         {
             base.ExtendSetup();
@@ -22,7 +22,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             Fixture.Customize<Question>(composer => composer
               .FromFactory(() => new Question(
                   question: Faker.Lorem.Sentence(),
-                  questionType: Enumeration.GetRandomEnumValue<QuestionType>()
+                  questionType: Enumeration.GetAll<QuestionType>().First()
               ))
           );
             _question = Fixture.Create<Question>();
@@ -34,19 +34,20 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             // Arrange
             var name = Faker.Lorem.Sentence();
             var evaluationType = FormEvaluation.SelfManagerEvaluation;
+
             // Act
             var evaluationForm = new EvaluationFormTemplate(name, evaluationType);
-            //Assert
-            evaluationForm.Name.Should().Be(name);
-            evaluationForm.IsDeleted.Should().BeFalse();
-            evaluationForm.IsActive.Should().BeFalse();
-            evaluationForm.EvaluationType.Should().Be(evaluationType);
-            evaluationForm.Questions.Should().BeEmpty();
+
+            // Assert
+            Assert.That(evaluationForm.Name, Is.EqualTo(name));
+            Assert.That(evaluationForm.IsDeleted, Is.False);
+            Assert.That(evaluationForm.IsActive, Is.False);
+            Assert.That(evaluationForm.EvaluationType, Is.EqualTo(evaluationType));
+            Assert.That(evaluationForm.Questions, Is.Empty);
         }
 
         [TestCase("")]
         [TestCase(null)]
-
         public void EvaluationForm_Should_Throw_Exception_With_Invalid_Name(string? name)
         {
             // Act
@@ -55,50 +56,42 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             // Assert
             if (name == null)
             {
-                action.Should().Throw<ArgumentNullException>()
-                    .WithMessage("Value cannot be null. (Parameter 'name')");
+                Assert.Throws<ArgumentNullException>(() => action(), "Value cannot be null. (Parameter 'name')");
             }
             else
             {
-                action.Should().Throw<ArgumentException>()
-                    .WithMessage("Required input name was empty. (Parameter 'name')");
+                Assert.Throws<ArgumentException>(() => action(), "Required input name was empty. (Parameter 'name')");
             }
         }
+
         [Test]
         public void SetEvaluationForm_Should_Be_Succeed()
         {
             // Arrange
-
             var newName = Faker.Lorem.Sentence();
 
             // Act
             _evaluationForm.SetEvaluationForm(newName);
 
             // Assert
-            _evaluationForm.Name.Should().Be(newName);
+            Assert.That(_evaluationForm.Name, Is.EqualTo(newName));
         }
+
         [TestCase("")]
         [TestCase(null)]
-
         public void SetEvaluationForm_Should_Throw_Exception_If_Name_Is_Null_Or_Empty(string? name)
         {
-            // Arrange
-
-
             // Act
             Action action = () => _evaluationForm.SetEvaluationForm(name);
 
             // Assert
-            // Assert
             if (name == null)
             {
-                action.Should().Throw<ArgumentNullException>()
-                    .WithMessage("Value cannot be null. (Parameter 'name')");
+                Assert.Throws<ArgumentNullException>(() => action(), "Value cannot be null. (Parameter 'name')");
             }
             else
             {
-                action.Should().Throw<ArgumentException>()
-                    .WithMessage("Required input name was empty. (Parameter 'name')");
+                Assert.Throws<ArgumentException>(() => action(), "Required input name was empty. (Parameter 'name')");
             }
         }
 
@@ -107,8 +100,9 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
         {
             // Act
             _evaluationForm.SetDelete();
-            //Assert
-            _evaluationForm.IsDeleted.Should().BeTrue();
+
+            // Assert
+            Assert.That(_evaluationForm.IsDeleted, Is.True);
         }
 
         [Test]
@@ -116,25 +110,28 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
         {
             // Act
             _evaluationForm.SetDeActivate();
-            //Assert
-            _evaluationForm.IsActive.Should().BeFalse();
+
+            // Assert
+            Assert.That(_evaluationForm.IsActive, Is.False);
         }
+
         [Test]
         public void AddQuestion_Should_Add_Questions_To_List()
         {
             // Arrange
             var questions = Fixture.CreateMany<Question>(3);
+
             // Act
             _evaluationForm.AddQuestion(questions);
-            //Assert
-            _evaluationForm.Questions.Should().HaveCount(3);
+
+            // Assert
+            Assert.That(_evaluationForm.Questions.Count, Is.EqualTo(3));
         }
 
         [Test]
         public void SetDeActivateQuestion_Should_Succeed()
         {
             // Arrange
-
             var question = _question;
             _evaluationForm.AddQuestion(new[] { question });
 
@@ -142,14 +139,13 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             _evaluationForm.SetDeActivateQuestion(question.QuestionGuid);
 
             // Assert
-            _evaluationForm.Questions.First().IsActive.Should().BeFalse();
+            Assert.That(_evaluationForm.Questions.First().IsActive, Is.False);
         }
 
         [Test]
         public void SetDeleteQuestion_Should_Be_Succeed()
         {
             // Arrange
-
             var question = _question;
             _evaluationForm.AddQuestion(new[] { question });
 
@@ -157,23 +153,22 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
             _evaluationForm.SetDeleteQuestion(question.QuestionGuid);
 
             // Assert
-            _evaluationForm.Questions.First().IsDeleted.Should().BeTrue();
+            Assert.That(_evaluationForm.Questions.First().IsDeleted, Is.True);
         }
 
         [Test]
         public void SetQuestion_Should_Be_Succeed()
         {
             // Arrange
-
             var question = _question;
             _evaluationForm.AddQuestion(new[] { question });
             var newQuestion = Faker.Lorem.Sentence();
+
             // Act
-            _evaluationForm.SetQuestion(question.QuestionGuid, newQuestion, Enumeration.GetRandomEnumValue<QuestionType>());
+            _evaluationForm.SetQuestion(question.QuestionGuid, newQuestion, Enumeration.GetAll<QuestionType>().First());
 
             // Assert
-
-            _evaluationForm.Questions.Should().Contain(q => q.QuestionText == newQuestion);
+            Assert.That(_evaluationForm.Questions, Has.Some.Matches<Question>(q => q.QuestionText == newQuestion));
         }
     }
 }

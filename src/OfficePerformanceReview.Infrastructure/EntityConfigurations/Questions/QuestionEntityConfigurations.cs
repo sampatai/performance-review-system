@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficePerformanceReview.Domain.Questions.Entities;
-using OfficePerformanceReview.Domain.Questions.Enum;
-
-public class QuestionConfiguration : IEntityTypeConfiguration<Question>
+﻿public class QuestionConfiguration : IEntityTypeConfiguration<Question>
 {
     public void Configure(EntityTypeBuilder<Question> builder)
     {

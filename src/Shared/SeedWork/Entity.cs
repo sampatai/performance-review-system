@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace OfficeReview.Shared.SeedWork;
 public abstract class Entity
 {
-    int? _requestedHashCode;
-    int _Id;
-    public virtual int Id
+    long? _requestedHashCode;
+    long _Id;
+    public virtual long Id
     {
         get
         {
@@ -68,7 +68,7 @@ public abstract class Entity
             if (!_requestedHashCode.HasValue)
                 _requestedHashCode = this.Id.GetHashCode() ^ 31; // XOR for random distribution (http://blogs.msdn.com/b/ericlippert/archive/2011/02/28/guidelines-and-rules-for-gethashcode.aspx)
 
-            return _requestedHashCode.Value;
+            return (int)_requestedHashCode.Value;
         }
         else
             return base.GetHashCode();

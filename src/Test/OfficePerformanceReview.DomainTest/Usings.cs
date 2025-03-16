@@ -4,6 +4,3 @@ global using OfficeReview.Domain.Profile.Root;
 global using OfficeReview.Domain.Questions.Root;
 global using OfficeReview.Shared.SeedWork;
 global using Bogus;
-global using FluentAssertions;
-global using OfficeReview.Domain.Profile.Enums;
-global using System.Net.Mail;
