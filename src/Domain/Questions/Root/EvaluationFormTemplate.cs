@@ -4,10 +4,10 @@ using OfficeReview.Domain.Questions.Enum;
 using OfficeReview.Shared.Exceptions;
 namespace OfficeReview.Domain.Questions.Root
 {
-    public class EvaluationForm : AuditableEntity, IAggregateRoot
+    public class EvaluationFormTemplate : AuditableEntity, IAggregateRoot
     {
         private List<Question> _Questions = new();
-        protected EvaluationForm()
+        protected EvaluationFormTemplate()
         {
 
         }
@@ -18,7 +18,7 @@ namespace OfficeReview.Domain.Questions.Root
         public FormEvaluation EvaluationType { get; private set; }
         public IReadOnlyList<Question> Questions => _Questions.AsReadOnly();
 
-        public EvaluationForm(string name, FormEvaluation formEvaluation)
+        public EvaluationFormTemplate(string name, FormEvaluation formEvaluation)
         {
             Guard.Against.NullOrEmpty(name, nameof(name));
             Guard.Against.Null(formEvaluation, nameof(formEvaluation));

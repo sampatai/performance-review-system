@@ -1,12 +1,12 @@
 ﻿using OfficeReview.Domain.Questions.Root;
 
-namespace OfficePerformanceReview.Infrastructure.EntityConfigurations
+namespace OfficePerformanceReview.Infrastructure.EntityConfigurations.Questions
 {
-    internal class EvaluationFormEntityConfigurations : IEntityTypeConfiguration<EvaluationForm>
+    internal class EvaluationFormEntityConfigurations : IEntityTypeConfiguration<EvaluationFormTemplate>
     {
-        public void Configure(EntityTypeBuilder<EvaluationForm> builder)
+        public void Configure(EntityTypeBuilder<EvaluationFormTemplate> builder)
         {
-            builder.ToTable(nameof(EvaluationForm).Humanize().Pluralize());
+            builder.ToTable(nameof(EvaluationFormTemplate).Humanize().Pluralize());
 
 
             builder.HasKey(o => o.Id);
@@ -33,7 +33,7 @@ namespace OfficePerformanceReview.Infrastructure.EntityConfigurations
                 .IsRequired();
             builder.HasMany(x => x.Questions)
                 .WithOne()
-                .HasForeignKey("EvaluationFormId")
+                .HasForeignKey("EvaluationFormTemplateId")
                 .IsRequired();
         }
     }

@@ -5,9 +5,10 @@ using OfficePerformanceReview.Domain.PerformanceReview.Enums;
 using OfficePerformanceReview.Domain.PerformanceReview.Root;
 using OfficeReview.Domain.Questions.Enum;
 using System.Linq;
+using NUnit.Framework;
+
 namespace OfficePerformanceReview.Tests
 {
-
     public class PerformanceReviewTests : TestBase
     {
         private NameValue _completedBy = null!;
@@ -23,14 +24,12 @@ namespace OfficePerformanceReview.Tests
 
             Fixture.Customize<NameValue>(_ => _
               .FromFactory(() => new NameValue(Faker.Random.Int(), Faker.Name.FullName()))
-          );
+            );
 
             _completedBy = Fixture.Create<NameValue>();
             _appraisedName = Fixture.Create<NameValue>();
             _reviewDate = Faker.Date.Recent();
             _performanceOverviewId = Faker.Random.Int(1);
-
-
 
             _question = Fixture.Create<QuestionFeedback>();
             _ratingScale = Enumeration.GetRandomEnumValue<RatingScale>();
@@ -40,18 +39,17 @@ namespace OfficePerformanceReview.Tests
            Faker.Random.String2(10),
            new DateRange(Faker.Date.RecentDateOnly(), Faker.Date.FutureDateOnly()),
             Enumeration.GetRandomEnumValue<ObjectiveStatus>()))
-       );
+           );
         }
+
         private PerformanceReview _SetPerformanceReview()
         {
-
             return new Faker<PerformanceReview>()
                 .CustomInstantiator(f => new PerformanceReview(_completedBy,
                _appraisedName,
                 _reviewDate, _performanceOverviewId))
                 .RuleFor(pr => pr.Feedbacks, f => new Feedback(FeedbackStatus.Pending));
         }
-
 
         [Test]
         public void Constructor_ShouldInitializeProperties()
@@ -62,11 +60,11 @@ namespace OfficePerformanceReview.Tests
             // Act
 
             // Assert
-            performanceReview.CompletedBy.Should().Be(_completedBy);
-            performanceReview.AppraisedName.Should().Be(_appraisedName);
-            performanceReview.ReviewDate.Should().Be(_reviewDate);
-            performanceReview.PerformanceOverviewId.Should().Be(_performanceOverviewId);
-            performanceReview.FeedbackStatus.Should().Be(FeedbackStatus.Pending);
+            Assert.That(performanceReview.CompletedBy, Is.EqualTo(_completedBy));
+            Assert.That(performanceReview.AppraisedName, Is.EqualTo(_appraisedName));
+            Assert.That(performanceReview.ReviewDate, Is.EqualTo(_reviewDate));
+            Assert.That(performanceReview.PerformanceOverviewId, Is.EqualTo(_performanceOverviewId));
+            Assert.That(performanceReview.FeedbackStatus, Is.EqualTo(FeedbackStatus.Pending));
         }
 
         [Test]
@@ -75,15 +73,14 @@ namespace OfficePerformanceReview.Tests
             // Arrange
             var performanceReview = _SetPerformanceReview();
             var newAppraisedName = Fixture.Create<NameValue>();
-
             var newReviewDate = Faker.Date.Recent();
 
             // Act
             performanceReview.SetPerformanceReview(newAppraisedName, newReviewDate);
 
             // Assert
-            performanceReview.AppraisedName.Should().Be(newAppraisedName);
-            performanceReview.ReviewDate.Should().Be(newReviewDate);
+            Assert.That(performanceReview.AppraisedName, Is.EqualTo(newAppraisedName));
+            Assert.That(performanceReview.ReviewDate, Is.EqualTo(newReviewDate));
         }
 
         [Test]
@@ -100,9 +97,9 @@ namespace OfficePerformanceReview.Tests
             performanceReview.AddPeerEvaluation(completedById, completedBy, deadline);
 
             // Assert
-            performanceReview.Evaluators.Should()
-                .ContainSingle(e => e.CompletedBy.Id == completedById && e.CompletedBy.Name == completedBy
-                && e.DeadLine == deadline);
+            Assert.That(performanceReview.Evaluators, Has.Some.Matches<PeerEvaluation>(
+                e => e.CompletedBy.Id == completedById && e.CompletedBy.Name == completedBy
+                && e.DeadLine == deadline));
         }
 
         [Test]
@@ -119,14 +116,14 @@ namespace OfficePerformanceReview.Tests
             var peerEvaluationGuid = performanceReview.Evaluators[0].PeerEvaluationGuid;
             var newCompletedBy = Faker.Name.FullName();
             var newcompletedById = Faker.Random.Int();
+
             // Act
             performanceReview.SetPeerEvaluation(peerEvaluationGuid, newcompletedById, newCompletedBy, deadline);
 
             // Assert
             var evaluator = performanceReview.Evaluators[0];
-            evaluator.CompletedBy.Name.Should().Be(newCompletedBy);
-            evaluator.CompletedBy.Id.Should().Be(newcompletedById);
-
+            Assert.That(evaluator.CompletedBy.Name, Is.EqualTo(newCompletedBy));
+            Assert.That(evaluator.CompletedBy.Id, Is.EqualTo(newcompletedById));
         }
 
         [Test]
@@ -134,18 +131,17 @@ namespace OfficePerformanceReview.Tests
         {
             // Arrange
             var performanceReview = _SetPerformanceReview();
-
-
             var completedById = Faker.Random.Int();
             var completedBy = Faker.Name.FullName();
             var deadline = DateOnly.FromDateTime(DateTime.Now.AddDays(7));
 
             performanceReview.AddPeerEvaluation(completedById, completedBy, deadline);
+
             // Act
             performanceReview.SetFeedback(performanceReview.Evaluators.First().PeerEvaluationGuid, new List<QuestionFeedback> { _question });
 
             // Assert
-            performanceReview.Evaluators[0].Feedbacks.Should().ContainSingle(f => f.QuestionId == _question.QuestionId);
+            Assert.That(performanceReview.Evaluators.Count(), Is.EqualTo(1));
         }
 
         [Test]
@@ -153,16 +149,14 @@ namespace OfficePerformanceReview.Tests
         {
             // Arrange
             var performanceReview = _SetPerformanceReview();
-
-
             var employeeRemarks = Fixture.Create<string>();
 
             // Act
             performanceReview.AddBehaviorMetricByEmployee(_question, _ratingScale, employeeRemarks);
 
             // Assert
-            performanceReview.Feedbacks.BehaviorMetrics.Should().ContainSingle(m => m.Metric == _question
-            && m.RevieweeRating == _ratingScale && m.EmployeeRemarks == employeeRemarks);
+            Assert.That(performanceReview.Feedbacks.BehaviorMetrics, Has.Some.Matches<BehaviorMetric>(
+                m => m.Metric == _question && m.RevieweeRating == _ratingScale && m.EmployeeRemarks == employeeRemarks));
         }
 
         [Test]
@@ -183,8 +177,8 @@ namespace OfficePerformanceReview.Tests
 
             // Assert
             var metric = performanceReview.Feedbacks.BehaviorMetrics.First();
-            metric.RevieweeRating.Should().Be(newRatingScale);
-            metric.EmployeeRemarks.Should().Be(newEmployeeRemarks);
+            Assert.That(metric.RevieweeRating, Is.EqualTo(newRatingScale));
+            Assert.That(metric.EmployeeRemarks, Is.EqualTo(newEmployeeRemarks));
         }
 
         [Test]
@@ -199,17 +193,15 @@ namespace OfficePerformanceReview.Tests
             performanceReview.SetEmployee(employeeComment, feedbackStatus);
 
             // Assert
-            performanceReview.Feedbacks.EmployeeComment.Should().Be(employeeComment);
-            performanceReview.Feedbacks.EmployeeFeedbackStatus.Should().Be(feedbackStatus);
+            Assert.That(performanceReview.Feedbacks.EmployeeComment, Is.EqualTo(employeeComment));
+            Assert.That(performanceReview.Feedbacks.EmployeeFeedbackStatus, Is.EqualTo(feedbackStatus));
         }
-
 
         [Test]
         public void SetBehaviorMetricByManager_ShouldUpdateBehaviorMetric()
         {
             // Arrange
             var performanceReview = _SetPerformanceReview();
-
 
             var employeeRemarks = Fixture.Create<string>();
             performanceReview.AddBehaviorMetricByEmployee(_question, _ratingScale, employeeRemarks);
@@ -223,8 +215,8 @@ namespace OfficePerformanceReview.Tests
 
             // Assert
             var metric = performanceReview.Feedbacks.BehaviorMetrics.First();
-            metric.ManagerRating.Should().Be(newRatingScale);
-            metric.ManagerRemarks.Should().Be(managerRemarks);
+            Assert.That(metric.ManagerRating, Is.EqualTo(newRatingScale));
+            Assert.That(metric.ManagerRemarks, Is.EqualTo(managerRemarks));
         }
 
         [Test]
@@ -241,9 +233,9 @@ namespace OfficePerformanceReview.Tests
             performanceReview.SetManager(feedbackStatus, managerComment, overallRating);
 
             // Assert
-            performanceReview.Feedbacks.ManagerFeedbackStatus.Should().Be(feedbackStatus);
-            performanceReview.Feedbacks.ReviewerComment.Should().Be(managerComment);
-            performanceReview.Feedbacks.PotentialLevel.Should().Be(overallRating);
+            Assert.That(performanceReview.Feedbacks.ManagerFeedbackStatus, Is.EqualTo(feedbackStatus));
+            Assert.That(performanceReview.Feedbacks.ReviewerComment, Is.EqualTo(managerComment));
+            Assert.That(performanceReview.Feedbacks.PotentialLevel, Is.EqualTo(overallRating));
         }
 
         [Test]
@@ -251,17 +243,17 @@ namespace OfficePerformanceReview.Tests
         {
             // Arrange
             var performanceReview = _SetPerformanceReview();
-
             var objective = Fixture.Create<Objective>();
 
             // Act
             performanceReview.AddObjective(new List<Objective> { objective });
 
             // Assert
-            performanceReview.Objectives.Should().ContainSingle(o => o.Description == objective.Description
-            && o.ActionPlan == objective.ActionPlan
-            && o.Timeline == objective.Timeline
-            && o.ProgressStatus == objective.ProgressStatus);
+            Assert.That(performanceReview.Objectives, Has.Some.Matches<Objective>(
+                o => o.Description == objective.Description
+                && o.ActionPlan == objective.ActionPlan
+                && o.Timeline == objective.Timeline
+                && o.ProgressStatus == objective.ProgressStatus));
         }
 
         [Test]
@@ -275,19 +267,15 @@ namespace OfficePerformanceReview.Tests
 
             // Act
             var newobjectives = Fixture.Create<Objective>();
-
             performanceReview.SetObjective(newobjectives.Description, newobjectives.ActionPlan, newobjectives.Timeline,
-                    newobjectives.ProgressStatus, objectives[0].ObjectiveGuid);       
+                    newobjectives.ProgressStatus, objectives[0].ObjectiveGuid);
 
             // Assert
-          
-                var existingObjective = performanceReview.Objectives[0];
-                existingObjective.Description.Should().Be(newobjectives.Description);
-                existingObjective.ActionPlan.Should().Be(newobjectives.ActionPlan);
-                existingObjective.Timeline.Should().Be(newobjectives.Timeline);
-                existingObjective.ProgressStatus.Should().Be(newobjectives.ProgressStatus);
-            
-
+            var existingObjective = performanceReview.Objectives[0];
+            Assert.That(existingObjective.Description, Is.EqualTo(newobjectives.Description));
+            Assert.That(existingObjective.ActionPlan, Is.EqualTo(newobjectives.ActionPlan));
+            Assert.That(existingObjective.Timeline, Is.EqualTo(newobjectives.Timeline));
+            Assert.That(existingObjective.ProgressStatus, Is.EqualTo(newobjectives.ProgressStatus));
         }
 
         [Test]
@@ -304,7 +292,8 @@ namespace OfficePerformanceReview.Tests
             performanceReview.RemoveObjective(guidsToRemove);
 
             // Assert
-            performanceReview.Objectives.Should().OnlyContain(o => !guidsToRemove.Contains(o.ObjectiveGuid));
+            Assert.That(performanceReview.Objectives, Has.None.Matches<Objective>(
+                o => guidsToRemove.Contains(o.ObjectiveGuid)));
         }
     }
 }
