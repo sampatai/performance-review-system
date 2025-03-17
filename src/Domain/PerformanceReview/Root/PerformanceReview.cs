@@ -13,14 +13,16 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         public NameValue CompletedBy { get; private set; }
         public NameValue AppraisedName { get; private set; }
         public Guid PerformanceReviewGuid { get; private set; }
-        public int PerformanceOverviewId { get; private set; }
+        public long PerformanceOverviewId { get; private set; }
         public FormEvaluation EvaluationType { get; private set; }
         public DateTime ReviewDate { get; private set; }
         public FeedbackStatus FeedbackStatus { get; private set; }
 
         public List<PeerEvaluation> _evaluators = new();
         public IReadOnlyList<PeerEvaluation> Evaluators => _evaluators.AsReadOnly();
-        public Feedback Feedbacks { get; private set; }
+        public List<Feedback> _feedbacks = new();
+
+        public IReadOnlyList<Feedback> Feedbacks => _feedbacks.AsReadOnly();
 
         private List<Objective> _objectives = new();
         public IReadOnlyList<Objective> Objectives => _objectives.AsReadOnly();
