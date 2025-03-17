@@ -20,9 +20,8 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
 
         public List<PeerEvaluation> _evaluators = new();
         public IReadOnlyList<PeerEvaluation> Evaluators => _evaluators.AsReadOnly();
-        public List<Feedback> _feedbacks = new();
-
-        public IReadOnlyList<Feedback> Feedbacks => _feedbacks.AsReadOnly();
+      
+        public Feedback Feedbacks { get; private set; }
 
         private List<Objective> _objectives = new();
         public IReadOnlyList<Objective> Objectives => _objectives.AsReadOnly();
@@ -45,7 +44,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
             FeedbackStatus = FeedbackStatus.Pending;
             PerformanceOverviewId = performanceOverviewId;
             PerformanceReviewGuid = Guid.NewGuid();
-            this.Feedbacks = new Feedback(FeedbackStatus.Pending);
+            //this.Feedbacks = new Feedback(FeedbackStatus.Pending);
         }
 
         public void SetPerformanceReview(
