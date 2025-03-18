@@ -1,6 +1,4 @@
-﻿
-
-using OfficePerformanceReview.Application.Behaviors;
+﻿using OfficePerformanceReview.Application.Behaviors;
 
 namespace OfficePerformanceReview.Application.DependencyExtensions
 {

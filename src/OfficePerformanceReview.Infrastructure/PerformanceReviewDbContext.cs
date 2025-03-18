@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using OfficePerformanceReview.Infrastructure.EntityConfigurations;
+using OfficeReview.Domain.Events.Root;
 using OfficeReview.Domain.Profile.Root;
 using OfficeReview.Domain.Questions.Root;
 using OfficeReview.Shared.SeedWork;
@@ -12,15 +13,17 @@ namespace OfficePerformanceReview.Infrastructure
     public class PerformanceReviewDbContext : IdentityDbContext<Staff, IdentityRole<long>, long>, IUnitOfWork
     {
         private readonly IMediator _mediator;
-        
+
         public PerformanceReviewDbContext(DbContextOptions<PerformanceReviewDbContext> options, IMediator mediator) : base(options)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + this.GetHashCode());
         }
 
-        public DbSet<Question> Questions { get; set; } = null!;
-        public DbSet<EvaluationFormTemplate> EvaluationFormTemplates { get; set; } = null!;
+        public virtual DbSet<Question> Questions { get; set; } = null!;
+        public virtual DbSet<EvaluationFormTemplate> EvaluationFormTemplates { get; set; } = null!;
+        public virtual DbSet<EventLogs> EventLogs { get; set; } = null!;
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<IdentityUserLogin<long>>(b =>
@@ -40,6 +43,12 @@ namespace OfficePerformanceReview.Infrastructure
                 r.ToTable("User_RefreshTokens");
             });
 
+            modelBuilder.Entity<Staff>().OwnsOne(e => e.Team, q =>
+                 {
+                     q.Property(pt => pt.Id);
+                     q.Property(pt => pt.Name);
+                 });
+
             modelBuilder.Entity<IdentityUserRole<long>>(b =>
             {
                 b.HasKey(r => new { r.UserId, r.RoleId }); // Composite primary key
@@ -49,8 +58,11 @@ namespace OfficePerformanceReview.Infrastructure
             {
                 b.HasKey(t => new { t.UserId, t.LoginProvider, t.Name }); // Composite primary key
             });
+
             modelBuilder.ApplyConfiguration(new EvaluationFormEntityConfigurations())
-                         .ApplyConfiguration(new QuestionEntityConfigurations());
+                         .ApplyConfiguration(new QuestionEntityConfigurations())
+                         .ApplyConfiguration(new EventLogEntityConfiguration())
+            ;
         }
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken))
