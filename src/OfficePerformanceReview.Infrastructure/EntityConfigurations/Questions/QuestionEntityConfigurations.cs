@@ -33,13 +33,6 @@ public class QuestionEntityConfigurations : IEntityTypeConfiguration<Question>
         builder.Property(e => e.IsDeleted)
             .IsRequired();
 
-        builder.Property(e => e.Options)
-            .HasColumnType("Options")  
-            .HasConversion(
-                v => string.Join(",", v),
-                v => v.Split(",", StringSplitOptions.None).ToList())
-            .IsRequired(false); // Options are not required unless the question type is MultipleChoice or SingleChoice
-
         builder.Property(e => e.IsRequired)
             .IsRequired();
     }
