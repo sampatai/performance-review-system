@@ -1,11 +1,12 @@
-﻿public class QuestionConfiguration : IEntityTypeConfiguration<Question>
+﻿namespace OfficePerformanceReview.Infrastructure.EntityConfigurations;
+public class QuestionEntityConfigurations : IEntityTypeConfiguration<Question>
 {
     public void Configure(EntityTypeBuilder<Question> builder)
     {
      
-        builder.ToTable(nameof(Question).Humanize().Pluralize());
+        builder.ToTable(nameof(Question).Pluralize());
   
-        builder.HasKey(o => o.QuestionGuid);
+        builder.HasKey(o => o.Id);
 
         
         builder.Ignore(b => b.DomainEvents);
@@ -31,13 +32,6 @@
             .IsRequired();
         builder.Property(e => e.IsDeleted)
             .IsRequired();
-
-        builder.Property(e => e.Options)
-            .HasColumnType("Options")  
-            .HasConversion(
-                v => string.Join(",", v),
-                v => v.Split(",", StringSplitOptions.None).ToList())
-            .IsRequired(false); // Options are not required unless the question type is MultipleChoice or SingleChoice
 
         builder.Property(e => e.IsRequired)
             .IsRequired();

@@ -1,0 +1,6 @@
+@OfficePerformanceReview.WebAPI_HostAddress = http://localhost:5279
+
+GET {{OfficePerformanceReview.WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
