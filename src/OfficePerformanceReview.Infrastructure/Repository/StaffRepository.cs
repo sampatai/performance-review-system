@@ -41,13 +41,16 @@ namespace OfficePerformanceReview.Infrastructure.Repository
         }
     }
     public class ReadonlyStaffRepository(ILogger<ReadonlyStaffRepository> logger,
-    UserManager<Staff> userManager,
-    RoleManager<IdentityRole> roleManager) : IReadonlyStaffRepository
+    UserManager<Staff> userManager
+    ) : IReadonlyStaffRepository
     {
         public async Task<bool> CheckEmailExistsAsync(string email, CancellationToken cancellationToken)
         {
             try
             {
+                var a = !await userManager
+                    .Users
+                    .AnyAsync(x => x.Email == email.ToLower(), cancellationToken);
                 return await userManager
                     .Users
                     .AnyAsync(x => x.Email == email.ToLower(), cancellationToken);
@@ -59,23 +62,6 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 throw; ;
             }
 
-        }
-
-        public async Task<IdentityRole> GetRoleById(long id)
-        {
-            try
-            {
-                return await roleManager
-                .Roles
-                .FirstOrDefaultAsync(x => x.Id.Equals(id));
-                  
-            }
-            catch (Exception ex)
-            {
-
-                logger.LogError(ex, "@{id}", id);
-                throw; ;
-            }
-        }
+        }     
     }
 }

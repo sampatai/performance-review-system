@@ -7,6 +7,7 @@ namespace OfficeReview.Domain.Profile.Root;
 public class Staff : IdentityUser<long>, IAggregateRoot
 
 {
+    private Staff() { } 
     public Staff(Team team, string firstName, string lastName, string email) : base()
     {
         Team = team;

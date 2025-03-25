@@ -11,6 +11,5 @@ namespace OfficePerformanceReview.Application.Repository
     public interface IReadonlyStaffRepository : IReadOnlyRepository<Staff>
     {
         Task<bool> CheckEmailExistsAsync(string email, CancellationToken cancellationToken);
-        Task<IdentityRole> GetRoleById(long Id);
     }
 }

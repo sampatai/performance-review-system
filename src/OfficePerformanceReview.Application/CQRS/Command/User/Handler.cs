@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using OfficePerformanceReview.Application.Repository;
+﻿using OfficePerformanceReview.Application.Repository;
 using OfficeReview.Domain.Profile.Enums;
 using OfficeReview.Shared.SeedWork;
 
@@ -18,9 +17,11 @@ namespace OfficePerformanceReview.Application.CQRS.Command.User
                     request.LastName,
                     request.Email);
 
-                var result = await staffRepository.CreateAsync(userToAdd, model.Password);
+                var result = await staffRepository.CreateAsync(userToAdd, "Password");
                 if (result.Succeeded)
                     await staffRepository.AddToRoleAsync(userToAdd, Enumeration.FromValue<Role>(request.RoleId).Name);
+                else
+                    throw new Exception(string.Join(",", result.Errors.Select(x=>x.Description)));
             }
             catch (Exception ex)
             {

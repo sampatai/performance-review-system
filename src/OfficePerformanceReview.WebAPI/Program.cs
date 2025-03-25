@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using OfficePerformanceReview.API.Middleware;
 using OfficePerformanceReview.Application.DependencyExtensions;
 using OfficePerformanceReview.Infrastructure.DependencyExtensions;
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.MapControllers();
 
