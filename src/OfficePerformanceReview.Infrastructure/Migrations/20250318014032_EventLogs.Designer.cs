@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfficePerformanceReview.Infrastructure;
 
@@ -11,9 +12,11 @@ using OfficePerformanceReview.Infrastructure;
 namespace OfficePerformanceReview.Infrastructure.Migrations
 {
     [DbContext(typeof(PerformanceReviewDbContext))]
-    partial class PerformanceReviewDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250318014032_EventLogs")]
+    partial class EventLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,14 +192,6 @@ namespace OfficePerformanceReview.Infrastructure.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -368,30 +363,7 @@ namespace OfficePerformanceReview.Infrastructure.Migrations
                                 .HasForeignKey("Id");
                         });
 
-                    b.OwnsOne("OfficeReview.Domain.Profile.Enums.Team", "Team", b1 =>
-                        {
-                            b1.Property<long>("StaffId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<int>("Id")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("Name")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("StaffId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("StaffId");
-                        });
-
                     b.Navigation("RefreshTokens");
-
-                    b.Navigation("Team")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("OfficeReview.Domain.Questions.Entities.Question", b =>

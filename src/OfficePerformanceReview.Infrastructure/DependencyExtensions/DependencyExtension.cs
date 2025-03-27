@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using OfficeReview.Domain.Profile.Root;
-using System.Reflection;
+﻿
+
 
 
 namespace OfficePerformanceReview.Infrastructure.DependencyExtensions
@@ -40,9 +37,11 @@ namespace OfficePerformanceReview.Infrastructure.DependencyExtensions
             .AddEntityFrameworkStores<PerformanceReviewDbContext>() // Provide our context
             .AddSignInManager<SignInManager<Staff>>() // Use SignInManager
             .AddUserManager<UserManager<Staff>>() // Use UserManager to create users
+
             .AddDefaultTokenProviders(); // Enable token providers for email confirmation
 
-
+            services.AddScoped<IStaffRepository, StaffRepository>();
+            services.AddScoped<IReadonlyStaffRepository, ReadonlyStaffRepository>();
             return services;
         }
 

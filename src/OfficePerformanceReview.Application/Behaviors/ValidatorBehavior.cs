@@ -1,6 +1,4 @@
-﻿
-
-namespace OfficePerformanceReview.Application.Behaviors;
+﻿namespace OfficePerformanceReview.Application.Behaviors;
 
 public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : MediatR.IBaseRequest
 {
@@ -19,8 +17,9 @@ public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest
 
         _logger.LogInformation("----- Validating command {CommandType}", typeName);
 
-        var failures = _validators
-            .Select(v => v.Validate(request))
+        var validationTasks = _validators.Select(v => v.ValidateAsync(request, cancellationToken));
+        var validationResults = await Task.WhenAll(validationTasks); // Await all tasks
+        var failures = validationResults
             .SelectMany(result => result.Errors)
             .Where(error => error != null)
             .ToList();

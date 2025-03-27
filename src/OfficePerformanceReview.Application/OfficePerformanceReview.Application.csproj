@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\OfficePerformanceReview.Domain.csproj" />
-    <ProjectReference Include="..\OfficePerformanceReview.Infrastructure\OfficePerformanceReview.Infrastructure.csproj" />
     <ProjectReference Include="..\Shared\OfficePerformanceReview.Shared.csproj" />
   </ItemGroup>
 
