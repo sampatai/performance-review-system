@@ -1,5 +1,5 @@
 ﻿namespace OfficePerformanceReview.Application.Model
 {
-    public record RegisterUserModel(string FirstName, string LastName, string Email, int Team, int RoleId);
+    public record RegisterUserModel(string FirstName, string LastName, string Email, int Team, int Role);
 
 }

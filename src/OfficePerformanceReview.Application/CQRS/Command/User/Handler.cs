@@ -17,9 +17,9 @@ namespace OfficePerformanceReview.Application.CQRS.Command.User
                     request.LastName,
                     request.Email);
 
-                var result = await staffRepository.CreateAsync(userToAdd, "Password");
+                var result = await staffRepository.CreateAsync(userToAdd, "Password@1");
                 if (result.Succeeded)
-                    await staffRepository.AddToRoleAsync(userToAdd, Enumeration.FromValue<Role>(request.RoleId).Name);
+                    await staffRepository.AddToRoleAsync(userToAdd, Enumeration.FromValue<Role>(request.Role).Name);
                 else
                     throw new Exception(string.Join(",", result.Errors.Select(x=>x.Description)));
             }

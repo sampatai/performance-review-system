@@ -12,16 +12,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddCors();
+// CORS Policy Configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        builder => builder
+            .WithOrigins("http://localhost:4200") // Ensure no trailing slash
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()); // If credentials (cookies, etc.) are involved
+});
+
 var app = builder.Build();
 
-app.UseCors(opt =>
-{
-    opt.AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials()
-    .WithOrigins("https://localhost:4200");
-});
+
+app.UseCors("AllowLocalhost");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

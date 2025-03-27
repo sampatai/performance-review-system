@@ -48,10 +48,8 @@ namespace OfficePerformanceReview.Infrastructure.Repository
         {
             try
             {
-                var a = !await userManager
-                    .Users
-                    .AnyAsync(x => x.Email == email.ToLower(), cancellationToken);
-                return await userManager
+                
+                return !await userManager
                     .Users
                     .AnyAsync(x => x.Email == email.ToLower(), cancellationToken);
             }
