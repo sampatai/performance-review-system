@@ -1,4 +1,5 @@
 ﻿using OfficePerformanceReview.Application.Behaviors;
+using OfficePerformanceReview.Application.Common.Service;
 
 namespace OfficePerformanceReview.Application.DependencyExtensions
 {
@@ -20,7 +21,12 @@ namespace OfficePerformanceReview.Application.DependencyExtensions
 
             // Register FluentValidation validators
             services.AddValidatorsFromAssembly(applicationAssembly, includeInternalTypes: true);
+            _RegisterServices(services);
             return services;
+        }
+        private static void _RegisterServices(IServiceCollection services)
+        {
+            services.AddScoped<IJWTService, JWTService>();
         }
 
     }

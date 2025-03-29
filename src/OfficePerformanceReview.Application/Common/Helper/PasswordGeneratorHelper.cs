@@ -1,4 +1,4 @@
-﻿public static class PasswordGenerator
+﻿public static class PasswordGeneratorHelper
 {
     private static readonly Random _random = new Random();
 

@@ -1,8 +1,9 @@
-﻿using OfficePerformanceReview.Application.Repository;
+﻿using OfficePerformanceReview.Application.Common.Model;
+using OfficePerformanceReview.Application.Common.Repository;
 
 namespace OfficePerformanceReview.Application.CQRS.Command.User
 {
-    public static class RegisterUserCommand
+    public static class RegisterUser
     {
         #region Command/Query
         public sealed record Command : RegisterUserModel, IRequest

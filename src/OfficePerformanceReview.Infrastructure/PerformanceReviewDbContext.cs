@@ -1,11 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using OfficePerformanceReview.Infrastructure.EntityConfigurations;
 using OfficeReview.Domain.Events.Root;
-using OfficeReview.Domain.Profile.Root;
 using OfficeReview.Domain.Questions.Root;
-using OfficeReview.Shared.SeedWork;
 
 namespace OfficePerformanceReview.Infrastructure
 {
@@ -43,11 +40,16 @@ namespace OfficePerformanceReview.Infrastructure
                 r.ToTable("User_RefreshTokens");
             });
 
-            modelBuilder.Entity<Staff>().OwnsOne(e => e.Team, q =>
+            modelBuilder.Entity<Staff>(s =>
+            {
+                s.OwnsOne(e => e.Team, q =>
                  {
                      q.Property(pt => pt.Id);
                      q.Property(pt => pt.Name);
                  });
+                s.Property(m => m.StaffGuid).IsRequired();
+                s.HasIndex(m => m.StaffGuid).IsUnique();
+            });
 
             modelBuilder.Entity<IdentityUserRole<long>>(b =>
             {
