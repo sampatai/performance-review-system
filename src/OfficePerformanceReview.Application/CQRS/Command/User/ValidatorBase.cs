@@ -1,4 +1,5 @@
-﻿using OfficeReview.Domain.Profile.Enums;
+﻿using OfficePerformanceReview.Application.Common.Model;
+using OfficeReview.Domain.Profile.Enums;
 using OfficeReview.Shared.SeedWork;
 
 

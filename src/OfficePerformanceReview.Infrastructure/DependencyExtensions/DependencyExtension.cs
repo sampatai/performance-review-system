@@ -2,6 +2,8 @@
 
 
 
+using OfficePerformanceReview.Application.Common.Repository;
+
 namespace OfficePerformanceReview.Infrastructure.DependencyExtensions
 {
     public static class DependencyExtension

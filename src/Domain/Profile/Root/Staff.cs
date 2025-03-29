@@ -17,23 +17,16 @@ public class Staff : IdentityUser<long>, IAggregateRoot
         UserName = email;
     }
     private readonly List<RefreshToken> _refreshTokens = new();
-    public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
+    public IEnumerable<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     public Team Team { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
 
     public void SetRefereshToken(string token, DateTime expireDate)
     {
-
+        _refreshTokens.Clear();
         _refreshTokens.Add(new RefreshToken(token, expireDate));
     }
-    //public void SetStaff(Team team, string firstName, string lastName)
-    //{
-
-    //    Team = team;
-    //    FirstName = Guard.Against.NullOrEmpty(firstName);
-    //    LastName = Guard.Against.NullOrEmpty(lastName);
-    //}
-
+    
 }
 

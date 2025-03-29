@@ -1,14 +1,14 @@
-﻿using OfficePerformanceReview.Application.Repository;
+﻿using OfficePerformanceReview.Application.Common.Repository;
 using OfficeReview.Domain.Profile.Enums;
 using OfficeReview.Shared.SeedWork;
 
 namespace OfficePerformanceReview.Application.CQRS.Command.User
 {
     public sealed class Handler(ILogger<Handler> logger,
-    IStaffRepository staffRepository) : IRequestHandler<RegisterUserCommand.Command>
+    IStaffRepository staffRepository) : IRequestHandler<RegisterUser.Command>
 
     {
-        public async Task Handle(RegisterUserCommand.Command request, CancellationToken cancellationToken)
+        public async Task Handle(RegisterUser.Command request, CancellationToken cancellationToken)
         {
             try
             {

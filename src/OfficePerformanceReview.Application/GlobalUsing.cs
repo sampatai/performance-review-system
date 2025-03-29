@@ -4,7 +4,6 @@ global using System.Reflection;
 global using MediatR;
 global using Microsoft.Extensions.Logging;
 global using OfficeReview.Shared.Exceptions;
-global using OfficePerformanceReview.Application.Model;
 global using Microsoft.AspNetCore.Identity;
 global using OfficeReview.Domain.Profile.Root;
-global using Microsoft.EntityFrameworkCore;
+global using OfficePerformanceReview.Application.Common.Model;

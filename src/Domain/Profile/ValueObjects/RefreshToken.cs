@@ -9,10 +9,11 @@
         public RefreshToken(string token,DateTime dateExpiresUtc)
         {
            Token= Guard.Against.NullOrEmpty(token);
-            dateExpiresUtc = Guard.Against.NullOrOutOfSQLDateRange(dateExpiresUtc);
+            DateExpiresUtc = Guard.Against.NullOrOutOfSQLDateRange(dateExpiresUtc);
+            DateCreatedUtc = DateTime.UtcNow;
         }
         public string Token { get; private set; }
-        public DateTime DateCreatedUtc { get; private set; } = DateTime.UtcNow;
+        public DateTime DateCreatedUtc { get; private set; } 
         public DateTime DateExpiresUtc { get; private set; }
         public bool IsExpired => DateTime.UtcNow >= DateExpiresUtc;
         protected override IEnumerable<object> GetEqualityComponents()
