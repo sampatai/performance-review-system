@@ -10,11 +10,14 @@ using OfficePerformanceReview.Application.CQRS.Command.User;
 using OfficePerformanceReview.Application.Common.Model;
 using OfficePerformanceReview.Domain.Profile.ValueObjects;
 using OfficePerformanceReview.Application.CQRS.Query.Login;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OfficePerformanceReview.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AccountController(ISender sender,
         ILogger<AccountController> logger) : ControllerBase
     {
@@ -42,7 +45,7 @@ namespace OfficePerformanceReview.WebAPI.Controllers
         [ProducesResponseType(typeof(LoginUserModel), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-
+        [AllowAnonymous]
         public async Task<ActionResult<LoginUserModel>> Login(LoginModel model, CancellationToken cancellationToken)
         {
 
@@ -66,6 +69,38 @@ namespace OfficePerformanceReview.WebAPI.Controllers
             }
 
         }
+
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(typeof(LoginUserModel), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+
+        public async Task<ActionResult<LoginUserModel>> RefereshToken(CancellationToken cancellationToken)
+        {
+
+            try
+            {
+                var token = Request.Cookies["reviewRefreshToken"];
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var result = await sender.Send(new ChekRefreshToken.Query(token, userId), cancellationToken);
+                if (result.Unauthorized)
+                    return Unauthorized(result.Message);
+                CookiesOption(result.JWT, result.DateExpiresUtc.GetValueOrDefault());
+                return Ok(new
+                {
+                    FirstName = result.FirstName,
+                    LastName = result.LastName,
+                    JWT = result.JWT,
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "faild");
+                throw;
+            }
+
+        }
+
         #region Helper
         private void CookiesOption(string token, DateTime expiresDate)
         {
@@ -74,7 +109,7 @@ namespace OfficePerformanceReview.WebAPI.Controllers
                 Expires = expiresDate,
                 IsEssential = true,
                 HttpOnly = true,
-               // Secure = true,          // Only sent over HTTPS
+                // Secure = true,          // Only sent over HTTPS
                 SameSite = SameSiteMode.Strict //Prevent CSRF attacks
             };
 

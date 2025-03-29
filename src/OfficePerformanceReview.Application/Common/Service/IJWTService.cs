@@ -45,7 +45,8 @@ namespace OfficePerformanceReview.Application.Common.Service
                     Subject = new ClaimsIdentity(userClaims),
                     Expires = DateTime.UtcNow.AddMinutes(int.Parse(config["JWT:ExpiresInMinutes"]!)),
                     SigningCredentials = credentials,
-                    Issuer = config["JWT:Issuer"]
+                    Issuer = config["JWT:Issuer"],
+                    Audience = config["JWT:Audience"]
                 };
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -84,7 +85,7 @@ namespace OfficePerformanceReview.Application.Common.Service
             {
                 var keyVaultUrl = config["AzureKeyVault:VaultUrl"] ?? "";
                 var secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-                var secret = await secretClient.GetSecretAsync("FeedbackKeyVault");
+                var secret = await secretClient.GetSecretAsync(config["AzureKeyVault:Secret"]);
                 return secret.Value.Value;
             }
             catch (Exception ex)

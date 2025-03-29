@@ -15,12 +15,14 @@ public class Staff : IdentityUser<long>, IAggregateRoot
         LastName = Guard.Against.NullOrEmpty(lastName);
         Email = Guard.Against.NullOrEmpty(email);
         UserName = email;
+        StaffGuid=Guid.NewGuid();
     }
     private readonly List<RefreshToken> _refreshTokens = new();
     public IEnumerable<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     public Team Team { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
+    public Guid StaffGuid { get; set; }
 
     public void SetRefereshToken(string token, DateTime expireDate)
     {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfficePerformanceReview.Infrastructure;
 
@@ -11,9 +12,11 @@ using OfficePerformanceReview.Infrastructure;
 namespace OfficePerformanceReview.Infrastructure.Migrations
 {
     [DbContext(typeof(PerformanceReviewDbContext))]
-    partial class PerformanceReviewDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250329032315_added_new_column_uniquekey-staff")]
+    partial class added_new_column_uniquekeystaff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

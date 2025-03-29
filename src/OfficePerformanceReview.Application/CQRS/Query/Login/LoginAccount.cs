@@ -5,7 +5,7 @@ namespace OfficePerformanceReview.Application.CQRS.Query.Login
 {
     public static class LoginAccount
     {
-        #region Request
+        #region Command/Query
         public record Query : LoginModel, IRequest<LoginResponse>
         {
             public Query(LoginModel original) : base(original)
@@ -72,9 +72,10 @@ namespace OfficePerformanceReview.Application.CQRS.Query.Login
                     await staffRepository
                         .SetLockoutEndDateAsync(user, null, cancellationToken);
                     var refreshToken = jwtService.CreateRefreshToken();
+                    var token = await jwtService.CreateJWT(user);
                     user.SetRefereshToken(refreshToken.Token, refreshToken.DateExpiresUtc);
                     await staffRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-                    return new LoginResponse("Login Successfull", false, user.FirstName, user.LastName, refreshToken.Token, refreshToken.DateExpiresUtc);
+                    return new LoginResponse("Login Successfull", false, user.FirstName, user.LastName, token, refreshToken.DateExpiresUtc);
                 }
                 catch (Exception ex)
                 {

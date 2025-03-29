@@ -22,6 +22,7 @@ namespace OfficePerformanceReview.Application.Common.Model
         {
             Message = message;
             Unauthorized = unauthorized;
+            DateExpiresUtc = null;
         }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
@@ -33,5 +34,7 @@ namespace OfficePerformanceReview.Application.Common.Model
 
 
     public record LoginUserModel(string FirstName, string LastName, string JWT);
+
+    
 
 }

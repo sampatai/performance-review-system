@@ -106,7 +106,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             {
 
                 logger.LogError(ex, "@{email}", email);
-                throw; ;
+                throw;
             }
 
         }
@@ -131,7 +131,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
         {
             try
             {
-                return await userManager.FindByNameAsync(userName); ;
+                return await userManager.FindByNameAsync(userName);
             }
             catch (Exception ex)
             {
@@ -152,6 +152,19 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             {
 
                 logger.LogError(ex, "@{staff}", staff);
+                throw;
+            }
+        }
+        public async Task<Staff> FindByIdAsync(string staffId)
+        {
+            try
+            {
+                return await userManager.FindByIdAsync(staffId); ;
+            }
+            catch (Exception ex)
+            {
+
+                logger.LogError(ex, "@{staffId}", staffId);
                 throw;
             }
         }

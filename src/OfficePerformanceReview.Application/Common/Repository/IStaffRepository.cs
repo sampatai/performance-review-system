@@ -17,7 +17,7 @@ namespace OfficePerformanceReview.Application.Common.Repository
         Task<IEnumerable<string>> GetRolesAsync(Staff staff);
         Task<Staff> FindByNameAsync(string userName);
         Task<SignInResult> CheckPasswordSignInAsync(Staff staff, string password, bool isLocked, CancellationToken cancellationToken);
-
+        Task<Staff> FindByIdAsync(string staffId);
 
     }
 }

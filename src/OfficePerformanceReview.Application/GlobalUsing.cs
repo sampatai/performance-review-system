@@ -7,3 +7,5 @@ global using OfficeReview.Shared.Exceptions;
 global using Microsoft.AspNetCore.Identity;
 global using OfficeReview.Domain.Profile.Root;
 global using OfficePerformanceReview.Application.Common.Model;
+global using OfficePerformanceReview.Application.Common.Repository;
+global using OfficePerformanceReview.Application.Common.Service;
