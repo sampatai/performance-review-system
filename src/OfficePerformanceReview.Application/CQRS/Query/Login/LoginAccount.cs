@@ -39,7 +39,8 @@ namespace OfficePerformanceReview.Application.CQRS.Query.Login
 
         {
             public const int _MAXIMUMLOGINATTEMPTS = 3;
-            public async Task<LoginResponse> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<LoginResponse> Handle(Query request,
+                CancellationToken cancellationToken)
             {
                 try
                 {
@@ -51,17 +52,20 @@ namespace OfficePerformanceReview.Application.CQRS.Query.Login
                     var result = await readonlyStaffRepository
                         .CheckPasswordSignInAsync(user, request.Password, false, cancellationToken);
                     if (result.IsLockedOut)
-                        return new LoginResponse(string.Format("Your account has been locked. You should wait until {0} (UTC time) to be able to login", user.LockoutEnd),
+                        return new LoginResponse(string.Format(@"Your account has been locked. 
+                                        You should wait until {0} (UTC time) to be able to login", user.LockoutEnd),
                             false);
                     if (!result.Succeeded)
                     {
                         await staffRepository.AccessFailedAsync(user, cancellationToken);
                         if (user.AccessFailedCount >= _MAXIMUMLOGINATTEMPTS)
                         {
-                            await staffRepository.SetLockoutEndDateAsync(user, DateTime.UtcNow.AddDays(1), cancellationToken);
+                            await staffRepository.SetLockoutEndDateAsync(user,
+                                DateTime.UtcNow.AddDays(1), cancellationToken);
 
                             return new LoginResponse(
-                           string.Format("Your account has been locked. You should wait until {0} (UTC time) to be able to login", user.LockoutEnd),
+                           string.Format(@"Your account has been locked.
+                           You should wait until {0} (UTC time) to be able to login", user.LockoutEnd),
                            false);
                         }
                         return new LoginResponse(
@@ -70,12 +74,17 @@ namespace OfficePerformanceReview.Application.CQRS.Query.Login
                     await staffRepository
                         .ResetAccessFailedCountAsync(user, cancellationToken);
                     await staffRepository
-                        .SetLockoutEndDateAsync(user, null, cancellationToken);
+                        .SetLockoutEndDateAsync(user, null, cancellationToken)
+                        ;
                     var refreshToken = jwtService.CreateRefreshToken();
                     var token = await jwtService.CreateJWT(user);
+
                     user.SetRefereshToken(refreshToken.Token, refreshToken.DateExpiresUtc);
                     await staffRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
-                    return new LoginResponse("Login Successfull", false, user.FirstName, user.LastName, token, refreshToken.DateExpiresUtc);
+
+                    return new LoginResponse("Login Successfull", false,
+                        user.FirstName, user.LastName, token,
+                        refreshToken.DateExpiresUtc);
                 }
                 catch (Exception ex)
                 {
