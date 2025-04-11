@@ -88,14 +88,14 @@ public class ExceptionHandlerMiddleware
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            return context.Response.WriteAsync(JsonSerializer.Serialize(GetGenericException()));
+            return context.Response.WriteAsync(JsonSerializer.Serialize(exception.Message));
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Cannot log error {0}", exception);
         }
 
-        return context.Response.WriteAsync(JsonSerializer.Serialize(GetGenericException()));
+        return context.Response.WriteAsync(JsonSerializer.Serialize(exception.Message));
     }
 
     private Object GetGenericException() => new

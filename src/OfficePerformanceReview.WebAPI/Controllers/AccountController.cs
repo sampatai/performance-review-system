@@ -1,14 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using System.Net;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using System.Threading;
 using OfficePerformanceReview.Application.CQRS.Command.User;
 using OfficePerformanceReview.Application.Common.Model;
-using OfficePerformanceReview.Domain.Profile.ValueObjects;
 using OfficePerformanceReview.Application.CQRS.Query.Login;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;

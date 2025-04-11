@@ -1,7 +1,4 @@
-﻿using OfficePerformanceReview.Application.Common.Repository;
-using OfficePerformanceReview.Application.Common.Service;
-
-namespace OfficePerformanceReview.Application.CQRS.Query.Login
+﻿namespace OfficePerformanceReview.Application.CQRS.Query.Login
 {
     public static class LoginAccount
     {
