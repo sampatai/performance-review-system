@@ -66,7 +66,7 @@ namespace OfficePerformanceReview.Application.Common.Service
         {
             try
             {
-                var tokenBytes = new byte[32];
+                var tokenBytes = new byte[64];
                 using var rng = RandomNumberGenerator.Create();
                 rng.GetBytes(tokenBytes);
 

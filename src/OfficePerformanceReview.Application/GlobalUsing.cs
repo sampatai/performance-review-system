@@ -9,3 +9,4 @@ global using OfficeReview.Domain.Profile.Root;
 global using OfficePerformanceReview.Application.Common.Model;
 global using OfficePerformanceReview.Application.Common.Repository;
 global using OfficePerformanceReview.Application.Common.Service;
+global using OfficePerformanceReview.Application.Common.Validators;

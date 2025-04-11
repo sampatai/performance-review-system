@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using OfficePerformanceReview.Application.Common.Repository;
-using OfficeReview.Domain.Profile.Enums;
-using OfficeReview.Domain.Profile.Root;
-using System.Threading;
+﻿using OfficePerformanceReview.Application.Common.Model;
+using OfficePerformanceReview.Infrastructure.Extension;
+using System.Linq.Expressions;
+
 
 namespace OfficePerformanceReview.Infrastructure.Repository
 {
@@ -77,7 +76,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
         {
             try
             {
-                return await userManager.SetLockoutEndDateAsync(staff,date);
+                return await userManager.SetLockoutEndDateAsync(staff, date);
 
             }
             catch (Exception ex)
@@ -90,7 +89,8 @@ namespace OfficePerformanceReview.Infrastructure.Repository
     }
     public class ReadonlyStaffRepository(ILogger<ReadonlyStaffRepository> logger,
     UserManager<Staff> userManager,
-    SignInManager<Staff> signInManager
+    SignInManager<Staff> signInManager,
+        PerformanceReviewDbContext performanceReviewDbContext
     ) : IReadonlyStaffRepository
     {
         public async Task<bool> CheckEmailExistsAsync(string email, CancellationToken cancellationToken)
@@ -167,6 +167,63 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 logger.LogError(ex, "@{staffId}", staffId);
                 throw;
             }
+        }
+
+        public async Task<(IEnumerable<UserModel> users, int totalCount)> GetStaffAsync(FilterBase filter, CancellationToken cancellationToken)
+        {
+            try
+            {
+
+                var query = (from u in performanceReviewDbContext.Users.Include(x => x.Team)
+                             join ur in performanceReviewDbContext.UserRoles on u.Id equals ur.UserId
+                             join r in performanceReviewDbContext.Roles on ur.RoleId equals r.Id
+                             select new { u, r });
+
+                var likeSearchTerm = $"%{filter.SearchTerm}%";
+
+                query = query.Where(x => EF.Functions.Like(x.u.FirstName, likeSearchTerm) ||
+                                         EF.Functions.Like(x.u.LastName, likeSearchTerm) ||
+                                         EF.Functions.Like(x.u.Email, likeSearchTerm) ||
+                                         EF.Functions.Like(x.r.Name, likeSearchTerm));
+
+
+                int totalRecords = await query.CountAsync(cancellationToken);
+                var columnMap = GetStaffSortColumnMap();
+
+
+                var users = query
+                    .Select(a => new UserModel(a.u.FirstName,
+                    a.u.LastName, a.u.Email!,
+                    new NameValueInt(a.u.Team.Id, a.u.Team.Name),
+                    new NameValue(a.r.Id, a.r.Name!)))
+                    .AsQueryable();
+
+                var results = await users.ApplySorting(
+                                     filter.SortColumn,
+                                     filter.SortDirection,
+                                     columnMap)
+                  .Skip((filter.PageNumber - 1) * filter.PageSize)
+                  .Take(filter.PageSize)
+                  .ToListAsync(cancellationToken);
+                return (results, totalRecords);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "GetStaffAsync {filter}", filter);
+                throw;
+            }
+        }
+
+        private Dictionary<string, Expression<Func<UserModel, object>>> GetStaffSortColumnMap()
+        {
+            return new Dictionary<string, Expression<Func<UserModel, object>>>(StringComparer.OrdinalIgnoreCase)
+           {
+            { "firstName", x => x.FirstName },
+            { "lastName", x => x.LastName },
+            { "email", x => x.Email },
+            { "team", x => x.Team.Name },
+            { "role", x => x.Role.Name },
+          };
         }
     }
 }

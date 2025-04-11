@@ -13,7 +13,8 @@ namespace OfficePerformanceReview.WebAPI.DependencyExtensions
          this IServiceCollection services, IConfiguration configuration)
         {
             var keyVaultUrl = configuration["AzureKeyVault:VaultUrl"];
-            var client = new SecretClient(new Uri(keyVaultUrl!), new DefaultAzureCredential());
+            var client = new SecretClient(new Uri(keyVaultUrl!), 
+                                          new DefaultAzureCredential());
             var jwtKeySecret = client.GetSecret(configuration["AzureKeyVault:Secret"]);
             var jwtSigningKey = jwtKeySecret.Value.Value;
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -27,7 +28,9 @@ namespace OfficePerformanceReview.WebAPI.DependencyExtensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = configuration["JWT:Issuer"],
                     ValidAudience = configuration["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                                        Encoding.UTF8.GetBytes(jwtSigningKey)
+                        )
                 };
 
             });
