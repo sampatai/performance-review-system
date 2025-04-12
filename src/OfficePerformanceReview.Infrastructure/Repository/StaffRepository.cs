@@ -192,9 +192,9 @@ namespace OfficePerformanceReview.Infrastructure.Repository
 
 
                 var users = query
-                    .Select(a => new UserModel(a.u.FirstName,
+                    .Select(a => new UserModel(a.u.StaffGuid, a.u.FirstName,
                     a.u.LastName, a.u.Email!,
-                    new NameValueInt(a.u.Team.Id, a.u.Team.Name),
+                    new NameValue(a.u.Team.Id, a.u.Team.Name),
                     new NameValue(a.r.Id, a.r.Name!)))
                     .AsQueryable();
 
