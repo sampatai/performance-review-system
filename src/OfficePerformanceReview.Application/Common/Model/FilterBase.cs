@@ -3,8 +3,8 @@
     public  record FilterBase(
         int PageNumber, 
         int PageSize,
-        string SearchTerm,
+        string? SearchTerm,
         string SortDirection,
-        string SortColumn);
+        string? SortColumn);
    
 }
