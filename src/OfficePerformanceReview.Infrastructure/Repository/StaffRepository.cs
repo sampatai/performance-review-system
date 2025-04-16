@@ -206,7 +206,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
 
 
                 var results = await query
-                    .ApplySorting(columnMap.Where(x => x.Key.Equals(filter.SortColumn)).First().Value, filter.SortDirection)
+                    .ApplySorting(columnMap.Where(x => x.Key.Equals(filter.SortColumn)).FirstOrDefault().Value, filter.SortDirection)
                     .Select(a => new UserModel(a.StaffGuid, a.FirstName,
                     a.LastName, a.Email!,
                     new NameValue(a.TeamId, a.TeamName),
