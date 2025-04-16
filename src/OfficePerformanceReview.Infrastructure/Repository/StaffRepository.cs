@@ -1,5 +1,6 @@
 ﻿using OfficePerformanceReview.Application.Common.Model;
 using OfficePerformanceReview.Infrastructure.Extension;
+using OfficeReview.Domain.Profile.Enums;
 using System.Linq.Expressions;
 
 
@@ -173,35 +174,43 @@ namespace OfficePerformanceReview.Infrastructure.Repository
         {
             try
             {
+                var columnMap = GetStaffSortColumnMap();
 
-                var query = (from u in performanceReviewDbContext.Users.Include(x => x.Team)
+                var query = (from u in performanceReviewDbContext.Users
+                             .Include(x => x.Team)
                              join ur in performanceReviewDbContext.UserRoles on u.Id equals ur.UserId
                              join r in performanceReviewDbContext.Roles on ur.RoleId equals r.Id
-                             select new { u, r });
+                             select new
+                             {
+                                 u.StaffGuid,
+                                 u.FirstName,
+                                 u.LastName,
+                                 u.Email,
+                                 TeamId = u.Team.Id,
+                                 TeamName = u.Team.Name,
+                                 RoleId = r.Id,
+                                 RoleName = r.Name
+                             });
+
+
 
                 var likeSearchTerm = $"%{filter.SearchTerm}%";
 
-                query = query.Where(x => EF.Functions.Like(x.u.FirstName, likeSearchTerm) ||
-                                         EF.Functions.Like(x.u.LastName, likeSearchTerm) ||
-                                         EF.Functions.Like(x.u.Email, likeSearchTerm) ||
-                                         EF.Functions.Like(x.r.Name, likeSearchTerm));
+                query = query.Where(x => EF.Functions.Like(x.FirstName, likeSearchTerm) ||
+                                         EF.Functions.Like(x.LastName, likeSearchTerm) ||
+                                         EF.Functions.Like(x.Email, likeSearchTerm) ||
+                                         EF.Functions.Like(x.TeamName, likeSearchTerm));
 
 
                 int totalRecords = await query.CountAsync(cancellationToken);
-                var columnMap = GetStaffSortColumnMap();
 
 
-                var users = query
-                    .Select(a => new UserModel(a.u.StaffGuid, a.u.FirstName,
-                    a.u.LastName, a.u.Email!,
-                    new NameValue(a.u.Team.Id, a.u.Team.Name),
-                    new NameValue(a.r.Id, a.r.Name!)))
-                    .AsQueryable();
-
-                var results = await users.ApplySorting(
-                                     filter.SortColumn,
-                                     filter.SortDirection,
-                                     columnMap)
+                var results = await query
+                    .ApplySorting(columnMap.Where(x => x.Key.Equals(filter.SortColumn)).FirstOrDefault().Value, filter.SortDirection)
+                    .Select(a => new UserModel(a.StaffGuid, a.FirstName,
+                    a.LastName, a.Email!,
+                    new NameValue(a.TeamId, a.TeamName),
+                    new NameValue(a.RoleId, a.RoleName!)))
                   .Skip((filter.PageNumber - 1) * filter.PageSize)
                   .Take(filter.PageSize)
                   .ToListAsync(cancellationToken);
@@ -214,15 +223,15 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             }
         }
 
-        private Dictionary<string, Expression<Func<UserModel, object>>> GetStaffSortColumnMap()
+        private Dictionary<string, string> GetStaffSortColumnMap()
         {
-            return new Dictionary<string, Expression<Func<UserModel, object>>>(StringComparer.OrdinalIgnoreCase)
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
            {
-            { "firstName", x => x.FirstName },
-            { "lastName", x => x.LastName },
-            { "email", x => x.Email },
-            { "team", x => x.Team.Name },
-            { "role", x => x.Role.Name },
+            { "firstName", "FirstName" },
+            { "lastName", "LastName" },
+            { "email", "Email" },
+            { "team", "TeamName" },
+            { "role", "RoleName" },
           };
         }
     }
