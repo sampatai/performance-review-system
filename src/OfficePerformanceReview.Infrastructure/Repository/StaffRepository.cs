@@ -211,7 +211,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                     a.LastName, a.Email!,
                     new NameValue(a.TeamId, a.TeamName),
                     new NameValue(a.RoleId, a.RoleName!)))
-                  .Skip((filter.PageNumber - 1) * filter.PageSize)
+                  .Skip((filter.Page - 1) * filter.PageSize)
                   .Take(filter.PageSize)
                   .ToListAsync(cancellationToken);
                 return (results, totalRecords);
