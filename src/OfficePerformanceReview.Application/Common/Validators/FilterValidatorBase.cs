@@ -6,7 +6,7 @@ namespace OfficePerformanceReview.Application.Common.Validators
     {
         protected FilterValidatorBase()
         {
-            RuleFor(x => x.PageNumber)
+            RuleFor(x => x.Page)
                    .GreaterThanOrEqualTo(1)
                    .WithMessage("Invalid {PropertyName} (> 0)")
                    .WithName("page number");
