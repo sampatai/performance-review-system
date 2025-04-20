@@ -30,13 +30,37 @@ namespace OfficePerformanceReview.WebAPI.Controllers
         {
             try
             {
-                var command =new  ListUser.Query(filter);
+                var command =new  ListUserId.Query(filter);
                 var result = await sender.Send(command, cancellationToken);
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "{@filter}", filter);
+                throw;
+            }
+        }
+
+        [HttpGet("{staffGuid}")]     
+        [SwaggerOperation(
+            Summary = "",
+       Description = "get by user",
+     OperationId = "performance.staff.edit",
+     Tags = new[] { "users" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns a user", type: typeof(EditUserModel))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Application failed to process the request")]
+        public async Task<ActionResult<EditUserModel>> GetAsync(Guid staffGuid, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var command = new GetByUser.Query(staffGuid);
+                var result = await sender.Send(command, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "{@staffGuid}", staffGuid);
                 throw;
             }
         }

@@ -87,6 +87,19 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 throw;
             }
         }
+        //public async Task<EditUserModel> FindByIdAsync(Guid staffId, CancellationToken cancellationToken)
+        //{
+        //    try
+        //    {
+                
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        logger.LogError(ex, "@{staffId}", staffId);
+        //        throw;
+        //    }
+        //}
     }
     public class ReadonlyStaffRepository(ILogger<ReadonlyStaffRepository> logger,
     UserManager<Staff> userManager,
@@ -141,7 +154,26 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 throw;
             }
         }
+        public async Task<EditUserModel> FindByIdAsync(Guid staffId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await (from u in performanceReviewDbContext.Users
+                             .Include(x => x.Team)
+                              join ur in performanceReviewDbContext.UserRoles on u.Id equals ur.UserId
+                              join r in performanceReviewDbContext.Roles on ur.RoleId equals r.Id
+                              where u.StaffGuid.Equals(staffId)
+                              select new EditUserModel(u.FirstName, u.LastName, u.Email, u.Team.Id, r.Id, u.StaffGuid)
+                             )
+                             .FirstOrDefaultAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
 
+                logger.LogError(ex, "@{staffId}", staffId);
+                throw;
+            }
+        }
         public async Task<IEnumerable<string>> GetRolesAsync(Staff staff)
         {
             try
@@ -233,6 +265,22 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             { "team", "TeamName" },
             { "role", "RoleName" },
           };
+        }
+
+        public async Task<bool> CheckUserExistsAsync(Guid staffId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await performanceReviewDbContext
+                     .Users
+                     .AnyAsync(x => x.StaffGuid.Equals(staffId), cancellationToken);
+            }
+            catch (Exception ex)
+            {
+
+                logger.LogError(ex, "CheckUserExistsAsync {staffId}", staffId);
+                throw;
+            }
         }
     }
 }
