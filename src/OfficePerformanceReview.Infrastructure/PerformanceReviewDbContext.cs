@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OfficePerformanceReview.Application.Common.Helper;
 using OfficePerformanceReview.Infrastructure.EntityConfigurations;
 using OfficeReview.Domain.Events.Root;
 using OfficeReview.Domain.Questions.Root;
@@ -10,11 +11,15 @@ namespace OfficePerformanceReview.Infrastructure
     public class PerformanceReviewDbContext : IdentityDbContext<Staff, IdentityRole<long>, long>, IUnitOfWork
     {
         private readonly IMediator _mediator;
-
-        public PerformanceReviewDbContext(DbContextOptions<PerformanceReviewDbContext> options, IMediator mediator) : base(options)
+        private readonly ICurrentUserHelper _currentUserHelper;
+        public PerformanceReviewDbContext(DbContextOptions<PerformanceReviewDbContext> options,
+            IMediator mediator,
+            ICurrentUserHelper currentUserHelper) : base(options)
         {
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _currentUserHelper = currentUserHelper ?? throw new ArgumentNullException(nameof(currentUserHelper));
             System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + this.GetHashCode());
+
         }
 
         public virtual DbSet<Question> Questions { get; set; } = null!;
@@ -78,7 +83,7 @@ namespace OfficePerformanceReview.Infrastructure
             foreach (var entityEntry in entries)
             {
                 var entity = (AuditableEntity)entityEntry.Entity;
-                var currentUser = "System"; // Replace with actual user context
+                var currentUser = (await _currentUserHelper.GetCurrentUser()).UserId; // Replace with actual user context
 
                 if (entityEntry.State == EntityState.Added)
                 {

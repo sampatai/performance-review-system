@@ -1,4 +1,5 @@
 ﻿using OfficePerformanceReview.Application.Behaviors;
+using OfficePerformanceReview.Application.Common.Helper;
 using OfficePerformanceReview.Application.Common.Service;
 
 namespace OfficePerformanceReview.Application.DependencyExtensions
@@ -27,6 +28,7 @@ namespace OfficePerformanceReview.Application.DependencyExtensions
         private static void _RegisterServices(IServiceCollection services)
         {
             services.AddScoped<IJWTService, JWTService>();
+            services.AddScoped<ICurrentUserHelper, HttpContextCurrentUserHelper>();
         }
 
     }

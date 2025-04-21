@@ -9,6 +9,9 @@ namespace OfficePerformanceReview.Application.Common.Repository
         Task<IdentityResult> AccessFailedAsync(Staff staff, CancellationToken cancellationToken);
         Task<IdentityResult> SetLockoutEndDateAsync(Staff staff, DateTime? date, CancellationToken cancellationToken);
         Task<IdentityResult> ResetAccessFailedCountAsync(Staff staff, CancellationToken cancellationToken);
+        Task<Staff> FindByIdAsync(Guid staffId, CancellationToken cancellationToken);
+        Task<IdentityResult> UpdateAsync(Staff userToAdd);
+        Task<bool> RemoveRoleAsync(string userId, string role);
     }
     public interface IReadonlyStaffRepository : IReadOnlyRepository<Staff>
     {

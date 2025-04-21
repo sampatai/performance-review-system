@@ -1,7 +1,7 @@
-﻿using OfficePerformanceReview.Application.Common.Model;
+﻿using Microsoft.AspNetCore.Identity;
+using OfficePerformanceReview.Application.Common.Model;
 using OfficePerformanceReview.Infrastructure.Extension;
-using OfficeReview.Domain.Profile.Enums;
-using System.Linq.Expressions;
+
 
 
 namespace OfficePerformanceReview.Infrastructure.Repository
@@ -42,7 +42,30 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             }
 
         }
+        public async Task<bool> RemoveRoleAsync(string userId, string role)
+        {
+            try
+            {
+                var user = await userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    var currentRoles = await userManager.GetRolesAsync(user);
+                    var removeResult = await userManager.RemoveFromRolesAsync(user, currentRoles);
+                    if (!removeResult.Succeeded)
+                        return false;
+                    else return true;
+                }
+                return true;
 
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "RemoveRoleAsync @{userId} @{role}", userId, role);
+
+                throw;
+            }
+
+        }
         public async Task<IdentityResult> CreateAsync(Staff userToAdd, string password)
         {
             try
@@ -87,19 +110,37 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 throw;
             }
         }
-        //public async Task<EditUserModel> FindByIdAsync(Guid staffId, CancellationToken cancellationToken)
-        //{
-        //    try
-        //    {
-                
-        //    }
-        //    catch (Exception ex)
-        //    {
+        public async Task<Staff> FindByIdAsync(Guid staffId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await performanceReviewDbContext
+                    .Users
+                    .AsTracking()
+                    .SingleOrDefaultAsync(x => x.StaffGuid.Equals(staffId));
+            }
+            catch (Exception ex)
+            {
 
-        //        logger.LogError(ex, "@{staffId}", staffId);
-        //        throw;
-        //    }
-        //}
+                logger.LogError(ex, "@{staffId}", staffId);
+                throw;
+            }
+        }
+        public async Task<IdentityResult> UpdateAsync(Staff userToAdd)
+        {
+            try
+            {
+                return await userManager.UpdateAsync(userToAdd);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "@{userToAdd}", userToAdd);
+
+                throw;
+            }
+        }
+
     }
     public class ReadonlyStaffRepository(ILogger<ReadonlyStaffRepository> logger,
     UserManager<Staff> userManager,

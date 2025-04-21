@@ -13,7 +13,7 @@ namespace OfficePerformanceReview.Application.CQRS.Query.User
             {
                 RuleFor(x => x.StaffGuid)
                 .MustAsync(readonlyStaffRepository.CheckUserExistsAsync)
-                .WithMessage("Email already exists.");
+                .WithMessage("User not exists.");
             }
         }
         #endregion
