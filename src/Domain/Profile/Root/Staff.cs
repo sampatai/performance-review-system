@@ -29,6 +29,14 @@ public class Staff : IdentityUser<long>, IAggregateRoot
         _refreshTokens.Clear();
         _refreshTokens.Add(new RefreshToken(token, expireDate));
     }
-    
+    public void SetStaff(Team team, string firstName, string lastName) 
+    {
+        Team = team;
+        FirstName = Guard.Against.NullOrEmpty(firstName);
+        LastName = Guard.Against.NullOrEmpty(lastName);
+       
+            
+    }
+
 }
 

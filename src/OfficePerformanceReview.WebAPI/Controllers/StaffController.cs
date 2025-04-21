@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficePerformanceReview.Application.Common.Model;
+using OfficePerformanceReview.Application.CQRS.Command.User;
 using OfficePerformanceReview.Application.CQRS.Query.User;
 using OfficePerformanceReview.WebAPI.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
@@ -30,7 +31,7 @@ namespace OfficePerformanceReview.WebAPI.Controllers
         {
             try
             {
-                var command =new  ListUser.Query(filter);
+                var command = new ListUser.Query(filter);
                 var result = await sender.Send(command, cancellationToken);
                 return Ok(result);
             }
@@ -41,12 +42,12 @@ namespace OfficePerformanceReview.WebAPI.Controllers
             }
         }
 
-        [HttpGet("{staffGuid}")]     
+        [HttpGet("{staffGuid}")]
         [SwaggerOperation(
-            Summary = "",
-       Description = "get by user",
-     OperationId = "performance.staff.edit",
-     Tags = new[] { "users" })]
+        Summary = "get by user",
+        Description = "get by user",
+       OperationId = "performance.staff.edit",
+       Tags = new[] { "users" })]
         [SwaggerResponse(StatusCodes.Status200OK, "Returns a user", type: typeof(EditUserModel))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, "Application failed to process the request")]
@@ -64,6 +65,38 @@ namespace OfficePerformanceReview.WebAPI.Controllers
                 throw;
             }
         }
+
+        [HttpPut("{staffId:guid}")]
+        [SwaggerOperation(
+        Summary = "Update staff",
+        Description = "Update staff",
+        OperationId = "performance.staff.update",
+        Tags = new[] { "users" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns a guid of updated")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Application failed to process the request")]
+        public async Task<IActionResult> Update([FromRoute, SwaggerParameter("staffId", Required = true)] Guid staffId,
+        [FromBody, SwaggerRequestBody("Update  parameters", Required = true)] RegisterUserModel registerUser, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var command = new EditUserModel(registerUser.FirstName,
+                    registerUser.LastName,
+                    registerUser.Email,
+                    registerUser.Team,
+                    registerUser.Role, staffId);
+
+                await sender.Send(new UserUpdate.Command(command), cancellationToken);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Update  {@registerUser}", registerUser);
+                throw;
+            }
+        }
+
     }
 }
 

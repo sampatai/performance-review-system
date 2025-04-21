@@ -5,7 +5,7 @@ using OfficeReview.Shared.SeedWork;
 namespace OfficePerformanceReview.Application.CQRS.Command.User
 {
     public sealed class Handler(ILogger<Handler> logger,
-    IStaffRepository staffRepository) : IRequestHandler<RegisterUser.Command>,IRequestHandler<UserUpdate.Command>
+    IStaffRepository staffRepository) : IRequestHandler<RegisterUser.Command>, IRequestHandler<UserUpdate.Command>
 
     {
         public async Task Handle(RegisterUser.Command request, CancellationToken cancellationToken)
@@ -32,7 +32,24 @@ namespace OfficePerformanceReview.Application.CQRS.Command.User
 
         public async Task Handle(UserUpdate.Command request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Staff userToUpdate = await staffRepository.FindByIdAsync(request.StaffGuid, cancellationToken);
+                userToUpdate.SetStaff(Enumeration.FromValue<Team>(request.Team),
+                    request.FirstName,
+                    request.LastName);
+
+                var result = await staffRepository.UpdateAsync(userToUpdate);
+                string role = Enumeration.FromValue<Role>(Convert.ToInt32(request.Role)).Name;
+                await staffRepository.RemoveRoleAsync(userToUpdate.Id.ToString(), role);
+                await staffRepository.AddToRoleAsync(userToUpdate, role);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "{@request}", request);
+                throw;
+            }
         }
     }
 }
