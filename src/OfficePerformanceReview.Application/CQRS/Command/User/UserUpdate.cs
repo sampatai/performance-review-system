@@ -1,11 +1,11 @@
 ﻿namespace OfficePerformanceReview.Application.CQRS.Command.User
 {
-    public static class RegisterUser
+   public static class UserUpdate
     {
         #region Command/Query
-        public sealed record Command : RegisterUserModel, IRequest
+        public sealed record Command : EditUserModel, IRequest
         {
-            public Command(RegisterUserModel original) : base(original)
+            public Command(EditUserModel original) : base(original)
             {
             }
         }
@@ -16,14 +16,12 @@
         {
             public Validator(IReadonlyStaffRepository readonlyStaffRepository)
             {
-
-                RuleFor(x => x.Email)
-                .MustAsync(readonlyStaffRepository.CheckEmailExistsAsync)
-                .WithMessage("Email already exists.");
+                RuleFor(x => x.StaffGuid)
+                .MustAsync(readonlyStaffRepository.CheckUserExistsAsync)
+                .WithMessage("User not exists.");
             }
 
         }
         #endregion
-
     }
 }

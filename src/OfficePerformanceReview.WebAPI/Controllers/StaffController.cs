@@ -30,7 +30,7 @@ namespace OfficePerformanceReview.WebAPI.Controllers
         {
             try
             {
-                var command =new  ListUserId.Query(filter);
+                var command =new  ListUser.Query(filter);
                 var result = await sender.Send(command, cancellationToken);
                 return Ok(result);
             }

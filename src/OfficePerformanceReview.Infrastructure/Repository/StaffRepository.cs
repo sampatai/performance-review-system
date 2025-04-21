@@ -1,7 +1,6 @@
 ﻿using OfficePerformanceReview.Application.Common.Model;
 using OfficePerformanceReview.Infrastructure.Extension;
-using OfficeReview.Domain.Profile.Enums;
-using System.Linq.Expressions;
+
 
 
 namespace OfficePerformanceReview.Infrastructure.Repository
@@ -87,19 +86,19 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 throw;
             }
         }
-        //public async Task<EditUserModel> FindByIdAsync(Guid staffId, CancellationToken cancellationToken)
-        //{
-        //    try
-        //    {
-                
-        //    }
-        //    catch (Exception ex)
-        //    {
+        public async Task<Staff> FindByIdAsync(Guid staffId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return null; 
+            }
+            catch (Exception ex)
+            {
 
-        //        logger.LogError(ex, "@{staffId}", staffId);
-        //        throw;
-        //    }
-        //}
+                logger.LogError(ex, "@{staffId}", staffId);
+                throw;
+            }
+        }
     }
     public class ReadonlyStaffRepository(ILogger<ReadonlyStaffRepository> logger,
     UserManager<Staff> userManager,

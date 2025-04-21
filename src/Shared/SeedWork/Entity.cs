@@ -91,15 +91,15 @@ public abstract class Entity
 public abstract class AuditableEntity : Entity
 {
     public DateTime CreatedDate { get; private set; } = DateTime.UtcNow;
-    public string CreatedBy { get; private set; } = "System";
+    public long CreatedBy { get; private set; } 
     public DateTime? LastModifiedDate { get; private set; }
-    public string? LastModifiedBy { get; private set; }
-    public void SetCreationAudits(string createdBy)
+    public long LastModifiedBy { get; private set; }
+    public void SetCreationAudits(long createdBy)
     {
         CreatedDate = DateTime.UtcNow;
         CreatedBy = createdBy;
     }
-    public void SetModificationAudits(string modifiedBy)
+    public void SetModificationAudits(long modifiedBy)
     {
         LastModifiedDate = DateTime.UtcNow;
         LastModifiedBy = modifiedBy;
