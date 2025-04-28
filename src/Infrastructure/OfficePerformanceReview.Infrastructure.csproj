@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application\OfficePerformanceReview.Application.csproj" />
     <ProjectReference Include="..\Domain\OfficePerformanceReview.Domain.csproj" />
-    <ProjectReference Include="..\OfficePerformanceReview.Application\OfficePerformanceReview.Application.csproj" />
   </ItemGroup>
 
 </Project>
