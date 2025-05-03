@@ -1,0 +1,67 @@
+name: "docker-performance-review"  # Project name used to scope container and network names
+
+services:
+  # Web API service
+  office-performance-review-webapi:
+    image: sampata/office-performance-review:latest  # Your published Web API Docker image
+    pull_policy: always  # Always pull the latest image version
+    container_name: office-performance-review-webapi  # Friendly name for the container
+    depends_on:
+      sqlserver:
+        condition: service_healthy  # Wait for SQL Server to be healthy before starting API
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development  # Set environment to Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PerformanceReview_360;User Id=sa;Password=Review@360;;TrustServerCertificate=True;
+        # Connection string using the service name "sqlserver" as hostname
+    ports:
+      - "5080:80"  # Map host port 5080 to container port 80
+    networks:
+      - office-performance-review  # Attach to shared Docker network
+    restart: on-failure  # Restart if the container fails
+
+  # SQL Server service
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest  # Official SQL Server image
+    container_name: sqlserver  # Friendly name for SQL Server container
+    environment:
+      - ACCEPT_EULA=Y  # Accept the license agreement
+      - SA_PASSWORD=Review@360  # Strong SA password
+      - MSSQL_PID=Express  # Use free Express edition
+    ports:
+      - "1433:1433"  # Expose SQL Server default port
+    volumes:
+      - sqlserver-data:/var/opt/mssql  # Persist SQL Server data
+    networks:
+      - office-performance-review
+    healthcheck:
+      # Fixed healthcheck using CMD-SHELL and localhost IP to avoid malformed network packet issues
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P Review@360 -Q 'SELECT 1' || exit 1"]
+      interval: 10s  # Run healthcheck every 10 seconds
+      timeout: 5s  # Fail if response takes longer than 5 seconds
+      retries: 5  # Retry 5 times before marking container as unhealthy
+    restart: on-failure  # Restart container on failure
+
+  # One-time DB initialization container
+  setupdb:
+    image: mcr.microsoft.com/mssql-tools  # Image with SQLCMD tool
+    container_name: setupdb
+    depends_on:
+      sqlserver:
+        condition: service_healthy  # Wait until SQL Server is healthy
+    volumes:
+      - ./init.sql:/init.sql  # Mount your init.sql script into container
+    entrypoint: >
+      bash -c "sleep 10 && /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P Review@360 -i /init.sql"
+        # Delay + run script once against the sqlserver container
+    networks:
+      - office-performance-review
+    restart: "no"  # Do not restart, runs once and exits
+
+# Shared network so services can talk to each other by name
+networks:
+  office-performance-review:
+    driver: bridge  # Basic Docker network for container-to-container communication
+
+# Persistent volume for SQL Server database files
+volumes:
+  sqlserver-data:

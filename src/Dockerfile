@@ -24,8 +24,9 @@ WORKDIR /app
 # Copy published output
 COPY --from=build /app/publish .
 
-# Set environment variables
-ENV ASPNETCORE_URLS=http://+:8080
-EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "OfficePerformanceReview.WebAPI.dll"]
+
+#docker build -t office-performance-review:latest .
+#docker tag office-performance-review:latest yourdockerhubusername/office-performance-review:latest
+#docker push yourdockerhubusername/office-performance-review:latest
