@@ -6,7 +6,7 @@ using OfficePerformanceReview.Infrastructure.Extension;
 
 namespace OfficePerformanceReview.Infrastructure.Repository
 {
-    public class StaffRepository(PerformanceReviewDbContext performanceReviewDbContext,
+    internal class StaffRepository(PerformanceReviewDbContext performanceReviewDbContext,
     ILogger<StaffRepository> logger,
     UserManager<Staff> userManager) : IStaffRepository
     {
@@ -142,7 +142,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
         }
 
     }
-    public class ReadonlyStaffRepository(ILogger<ReadonlyStaffRepository> logger,
+    internal class ReadonlyStaffRepository(ILogger<ReadonlyStaffRepository> logger,
     UserManager<Staff> userManager,
     SignInManager<Staff> signInManager,
         PerformanceReviewDbContext performanceReviewDbContext

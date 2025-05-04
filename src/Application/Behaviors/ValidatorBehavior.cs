@@ -1,6 +1,6 @@
 ﻿namespace OfficePerformanceReview.Application.Behaviors;
 
-public class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : MediatR.IBaseRequest
+internal class ValidatorBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : MediatR.IBaseRequest
 {
     private readonly ILogger<ValidatorBehavior<TRequest, TResponse>> _logger;
     private readonly IEnumerable<IValidator<TRequest>> _validators;

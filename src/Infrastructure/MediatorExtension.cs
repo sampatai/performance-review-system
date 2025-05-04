@@ -4,7 +4,7 @@ using OfficeReview.Shared.SeedWork;
 
 namespace OfficePerformanceReview.Infrastructure
 {
-    public static class MediatorExtensions
+    internal static class MediatorExtensions
     {
         public static async Task DispatchDomainEventsAsync(this IMediator mediator, DbContext context)
         {

@@ -8,7 +8,7 @@ using OfficeReview.Domain.Questions.Root;
 namespace OfficePerformanceReview.Infrastructure
 {
 
-    public class PerformanceReviewDbContext : IdentityDbContext<Staff, IdentityRole<long>, long>, IUnitOfWork
+    internal class PerformanceReviewDbContext : IdentityDbContext<Staff, IdentityRole<long>, long>, IUnitOfWork
     {
         private readonly IMediator _mediator;
         private readonly ICurrentUserHelper _currentUserHelper;
