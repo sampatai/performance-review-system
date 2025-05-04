@@ -10,7 +10,7 @@ namespace OfficePerformanceReview.Application.Common.Helper
         Task<CurrentUserInfo> GetCurrentUser();
         
     }
-    public class HttpContextCurrentUserHelper(ILogger<HttpContextCurrentUserHelper> logger,
+    internal class HttpContextCurrentUserHelper(ILogger<HttpContextCurrentUserHelper> logger,
         IHttpContextAccessor httpContextAccessor) : ICurrentUserHelper
     {
         public async Task<CurrentUserInfo> GetCurrentUser()

@@ -1,7 +1,7 @@
 ﻿using OfficePerformanceReview.Domain.PerformanceReview.Root;
 
 namespace OfficePerformanceReview.Infrastructure.EntityConfigurations;
-public class PerformanceReviewEntityConfiguration : IEntityTypeConfiguration<PerformanceReview>
+internal class PerformanceReviewEntityConfiguration : IEntityTypeConfiguration<PerformanceReview>
 {
     public void Configure(EntityTypeBuilder<PerformanceReview> builder)
     {

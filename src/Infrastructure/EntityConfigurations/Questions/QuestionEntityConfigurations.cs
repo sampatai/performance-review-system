@@ -1,5 +1,5 @@
 ﻿namespace OfficePerformanceReview.Infrastructure.EntityConfigurations;
-public class QuestionEntityConfigurations : IEntityTypeConfiguration<Question>
+internal class QuestionEntityConfigurations : IEntityTypeConfiguration<Question>
 {
     public void Configure(EntityTypeBuilder<Question> builder)
     {
