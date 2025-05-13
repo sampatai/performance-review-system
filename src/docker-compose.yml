@@ -1,52 +1,6 @@
 services:
-  office-performance-review-webapi:  
-    build: 
-      context: .  # Path to Dockerfile location
-      dockerfile: Dockerfile  # Name of your Dockerfile
-    container_name: office-performance-review-webapi
-    depends_on:
-      sqlserver:
-        condition: service_healthy
-    env_file:
-      - .env  # Load ALL environment variables from .env file
-    environment:
-      - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
-      - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
-      - AZURE_TENANT_ID=${AZURE_TENANT_ID}
-      - AZURE_AUTHORITY_HOST={AZURE_AUTHORITY_HOST}{AZURE_TENANT_ID} 
-      - ASPNETCORE_URLS=http://+:80 # Container listens on HTTP by default
-    expose:
-      - "8080" # Expose internal HTTP port
-    networks:
-      - office-performance-review
-    restart: on-failure
-
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: performancesqlserver
-    user: root 
-    env_file:
-      - .env  # Share the same .env file
-    environment:
-      ACCEPT_EULA: ${ACCEPT_EULA:-"Y"}  # Default to "Y" if not set
-      SA_PASSWORD: ${DB_PASSWORD}       # From .env
-      MSSQL_PID: ${DB_EDITION:-"Express"}  # Default to Express
-    ports:
-      - "1433:1433"
-    volumes:
-      - performance-review-data:/var/opt/mssql/data
-    networks:
-      - office-performance-review
-    healthcheck:
-      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${DB_PASSWORD}", "-Q", "SELECT 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: on-failure
-
-networks:
-  office-performance-review:
-    driver: bridge
-
-volumes:
-  performance-review-data:
+  officeperformancereview.webapi:
+    image: ${DOCKER_REGISTRY-}officeperformancereviewwebapi
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile
