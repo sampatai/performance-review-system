@@ -2,6 +2,8 @@
 using OfficePerformanceReview.Application.DependencyExtensions;
 using OfficePerformanceReview.Infrastructure.DependencyExtensions;
 using OfficePerformanceReview.WebAPI.DependencyExtensions;
+using OfficePerformanceReview.WebAPI.MinimalApi.Extensions;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +27,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthenticationWithBearer(builder.Configuration);
-
+builder.Services.AddEndpoints(typeof(Program).Assembly);
 var app = builder.Build();
 
 app.UseCors("AllowLocalhost");
@@ -42,7 +44,6 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = string.Empty;
     });
 }
-
 app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
