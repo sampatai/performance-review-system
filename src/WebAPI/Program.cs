@@ -1,4 +1,6 @@
-﻿using OfficePerformanceReview.API.Middleware;
+﻿using Asp.Versioning;
+using Asp.Versioning.Builder;
+using OfficePerformanceReview.API.Middleware;
 using OfficePerformanceReview.Application.DependencyExtensions;
 using OfficePerformanceReview.Infrastructure.DependencyExtensions;
 using OfficePerformanceReview.WebAPI.DependencyExtensions;
@@ -53,4 +55,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
+
+RouteGroupBuilder versionedGroup = app
+    .MapGroup("api/v{version:apiVersion}")
+    .WithApiVersionSet(apiVersionSet);
+
+app.MapEndpoints(versionedGroup);
 app.Run();
