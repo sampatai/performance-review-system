@@ -24,7 +24,7 @@
       "publishAllPorts": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://+:8080;https://+:8081"
+        "ASPNETCORE_URLS": "http://+:80" //This ensures that even when Visual Studio launches your application in Docker, it will only try to listen on HTTP port 80.
       }
     }
   },

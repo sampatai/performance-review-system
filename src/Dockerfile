@@ -1,38 +1,39 @@
 # ---------------------------------------------
-# Stage 1: Base Image
-# ---------------------------------------------
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-ENV ASPNETCORE_URLS="http://+:8080;https://+:8081"
-ENV ASPNETCORE_ENVIRONMENT=Development
-
-# ---------------------------------------------
-# Stage 2: Build
+# Stage 1: Build Stage
 # ---------------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy everything from /src folder into the build context
+# Copy solution file and project files
 COPY . .
 
-# Restore dependencies (nuget + project references)
+# Restore dependencies
 RUN dotnet restore OfficePerformanceReview.sln
 
-# Build 
+# Copy the rest of the application code
+COPY . .
+
+# Build the application
 RUN dotnet build OfficePerformanceReview.sln -c $BUILD_CONFIGURATION --no-restore -o /app/build
-# Stage 2: Publish the API Project
 
-FROM build AS publish
-RUN dotnet publish WebAPI/OfficePerformanceReview.WebAPI.csproj  -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Publish the application
+RUN dotnet publish WebAPI/OfficePerformanceReview.WebAPI.csproj -c $BUILD_CONFIGURATION --no-restore -o /app/publish /p:IncludeSymbols=false /p:DebugType=None
 
 # ---------------------------------------------
-# Stage 3: Final
+# Stage 2: Final Runtime Stage
 # ---------------------------------------------
-FROM base AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish . 
+
+# Create a non-root user for security
 USER app
+
+# Copy the published output from the build stage
+COPY --from=build /app/publish .
+
+# Define entrypoint
 ENTRYPOINT ["dotnet", "OfficePerformanceReview.WebAPI.dll"]
+
+# Expose the application port (HTTP by default in development)
+EXPOSE 80

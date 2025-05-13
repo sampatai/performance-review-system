@@ -1,0 +1,4 @@
+services:
+  office-performance-review-webapi:
+    ports:
+      - "${WEBAPI_HOST_HTTP_PORT:-5080}:80" # Map host port to container port

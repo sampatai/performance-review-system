@@ -13,9 +13,10 @@ services:
       - AZURE_CLIENT_ID=${AZURE_CLIENT_ID}
       - AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}
       - AZURE_TENANT_ID=${AZURE_TENANT_ID}
-     
-    ports:
-      - "5080:80"
+      - AZURE_AUTHORITY_HOST={AZURE_AUTHORITY_HOST}{AZURE_TENANT_ID} 
+      - ASPNETCORE_URLS=http://+:80 # Container listens on HTTP by default
+    expose:
+      - "8080" # Expose internal HTTP port
     networks:
       - office-performance-review
     restart: on-failure
