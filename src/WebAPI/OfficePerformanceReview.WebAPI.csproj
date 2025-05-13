@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Abstractions" Version="8.1.0" />
     <PackageReference Include="Asp.Versioning.Http" Version="8.1.0" />
+    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
@@ -33,10 +34,6 @@
 
   <ItemGroup>
     <EditorConfigFiles Remove="C:\Demo-DDD\360-feedback-system\src\OfficePerformanceReview.WebAPI\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MinimalApi\Endpoints\Question\" />
   </ItemGroup>
 
 </Project>

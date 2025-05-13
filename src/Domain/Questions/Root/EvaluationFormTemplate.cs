@@ -18,7 +18,8 @@ namespace OfficeReview.Domain.Questions.Root
         public FormEvaluation EvaluationType { get; private set; }
         public IReadOnlyList<Question> Questions => _Questions.AsReadOnly();
 
-        public EvaluationFormTemplate(string name, FormEvaluation formEvaluation)
+        public EvaluationFormTemplate(string name, 
+            FormEvaluation formEvaluation)
         {
             Guard.Against.NullOrEmpty(name, nameof(name));
             Guard.Against.Null(formEvaluation, nameof(formEvaluation));
@@ -26,7 +27,7 @@ namespace OfficeReview.Domain.Questions.Root
             Name = name;
             EvaluationFormGuid = Guid.NewGuid();
             IsDeleted = false;
-            IsActive = false;
+            IsActive = true;
             this.EvaluationType = formEvaluation;
         }
         public void SetEvaluationForm(string name)
