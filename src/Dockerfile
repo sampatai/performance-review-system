@@ -1,48 +1,38 @@
-# Stage 1: Restore and Build
+# ---------------------------------------------
+# Stage 1: Base Image
+# ---------------------------------------------
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+ENV ASPNETCORE_URLS="http://+:8080;https://+:8081"
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+# ---------------------------------------------
+# Stage 2: Build
+# ---------------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Install Azure CLI and PowerShell in build stage (needed for some NuGet packages)
-RUN apt-get update && \
-    apt-get install -y wget apt-transport-https software-properties-common && \
-    wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb && \
-    dpkg -i packages-microsoft-prod.deb && \
-    apt-get update && \
-    apt-get install -y powershell azure-cli
-
-# Copy solution and project files
-COPY OfficePerformanceReview.sln . 
+# Copy everything from /src folder into the build context
 COPY . .
 
-# Restore dependencies
-RUN dotnet restore
+# Restore dependencies (nuget + project references)
+RUN dotnet restore OfficePerformanceReview.sln
 
-# Copy the full source code
-COPY . .
+# Build 
+RUN dotnet build OfficePerformanceReview.sln -c $BUILD_CONFIGURATION --no-restore -o /app/build
+# Stage 2: Publish the API Project
 
-WORKDIR /src/WebAPI
+FROM build AS publish
+RUN dotnet publish WebAPI/OfficePerformanceReview.WebAPI.csproj  -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Publish the app to a folder
-RUN dotnet publish -c Release -o /app/publish
-
-# Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+# ---------------------------------------------
+# Stage 3: Final
+# ---------------------------------------------
+FROM base AS runtime
 WORKDIR /app
-
-# Install Azure CLI and PowerShell in runtime image
-RUN apt-get update && \
-    apt-get install -y wget apt-transport-https software-properties-common && \
-    wget -q https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb && \
-    dpkg -i packages-microsoft-prod.deb && \
-    apt-get update && \
-    apt-get install -y powershell azure-cli
-
-# Copy published output
-COPY --from=build /app/publish .
-
-# Set environment variables for Azure authentication (optional)
-# ENV AZURE_TENANT_ID=your_tenant_id
-# ENV AZURE_CLIENT_ID=your_client_id
-# ENV AZURE_CLIENT_SECRET=your_client_secret
-
+COPY --from=publish /app/publish . 
+USER app
 ENTRYPOINT ["dotnet", "OfficePerformanceReview.WebAPI.dll"]
