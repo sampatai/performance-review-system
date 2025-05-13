@@ -1,9 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OfficePerformanceReview.Application.Common.Model;
-using OfficePerformanceReview.Application.CQRS.Command.User;
-using OfficePerformanceReview.Application.CQRS.Query.User;
+﻿using OfficePerformanceReview.Application.CQRS.Query.User;
 using Swashbuckle.AspNetCore.Annotations;
 
 

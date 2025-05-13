@@ -1,13 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using OfficePerformanceReview.Application.CQRS.Command.User;
-using OfficePerformanceReview.Application.Common.Model;
-using OfficePerformanceReview.Application.CQRS.Query.Login;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
-
-namespace OfficePerformanceReview.WebAPI.Controllers
+﻿namespace OfficePerformanceReview.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -21,8 +21,6 @@ namespace OfficePerformanceReview.Infrastructure
             System.Diagnostics.Debug.WriteLine("OrderingContext::ctor ->" + this.GetHashCode());
 
         }
-
-        public virtual DbSet<Question> Questions { get; set; } = null!;
         public virtual DbSet<EvaluationFormTemplate> EvaluationFormTemplates { get; set; } = null!;
         public virtual DbSet<EventLogs> EventLogs { get; set; } = null!;
 

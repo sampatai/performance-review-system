@@ -45,6 +45,8 @@
 
             services.AddScoped<IStaffRepository, StaffRepository>();
             services.AddScoped<IReadonlyStaffRepository, ReadonlyStaffRepository>();
+            services.AddScoped<IEvaluationFormTemplateRepository, EvaluationFormTemplateRepository>();
+            services.AddScoped<IReadonlyEvaluationFormTemplateRepository, ReadonlyEvaluationFormTemplateRepository>();
             return services;
         }
 

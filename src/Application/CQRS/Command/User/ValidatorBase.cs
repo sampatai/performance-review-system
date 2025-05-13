@@ -1,5 +1,4 @@
-﻿using OfficePerformanceReview.Application.Common.Model;
-using OfficeReview.Domain.Profile.Enums;
+﻿using OfficeReview.Domain.Profile.Enums;
 using OfficeReview.Shared.SeedWork;
 
 
@@ -17,7 +16,7 @@ namespace OfficePerformanceReview.Application.CQRS.Command.User
             .NotEmpty()
             .WithMessage("LastName is required.");
 
-            RuleFor(r => r.Email)
+            RuleFor(r => r.Email)   
              .NotEmpty()
              .WithMessage("Email is required.")
              .EmailAddress()
