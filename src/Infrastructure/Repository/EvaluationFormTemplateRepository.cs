@@ -1,4 +1,5 @@
 ﻿
+using OfficePerformanceReview.Application.Common.Model;
 using OfficeReview.Domain.Questions.Root;
 
 namespace OfficePerformanceReview.Infrastructure.Repository
@@ -38,6 +39,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 return await performanceReviewDbContext
                     .EvaluationFormTemplates
                     .Include(x => x.Questions)
+                    .AsSplitQuery()
                     .AsNoTracking()
                     .SingleOrDefaultAsync(x => x.EvaluationFormGuid == evaluationFormTemplateGuid, cancellationToken);
             }
@@ -67,8 +69,12 @@ namespace OfficePerformanceReview.Infrastructure.Repository
         }
     }
     internal class ReadonlyEvaluationFormTemplateRepository(PerformanceReviewDbContext performanceReviewDbContext,
-    ILogger<ReadonlyEvaluationFormTemplateRepository> logger) : IReadonlyEvaluationFormTemplateRepository
+    ILogger<ReadonlyEvaluationFormTemplateRepository> logger)
+        : IReadonlyEvaluationFormTemplateRepository
     {
-
+        public Task<(IEnumerable<EvaluationFormTemplate> Items, int TotalCount)> GetAllAsync(FilterBase filter, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

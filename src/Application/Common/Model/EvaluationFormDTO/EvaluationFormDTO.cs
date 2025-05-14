@@ -16,15 +16,23 @@ namespace OfficePerformanceReview.Application.Common.Model.EvaluationForm
         }
     }
 
-    public record UpdateEvaluationFormDTO : EvaluationFormDTO
+    public record GetEvaluationFormDTO : EvaluationFormDTO
     {
-        public UpdateEvaluationFormDTO(string name, FormEvaluation formEvaluation,
-            IEnumerable<QuestionDTO> questions,
-            Guid evaluationFormGuid)
+        public GetEvaluationFormDTO(string name, FormEvaluation formEvaluation,
+            IEnumerable<QuestionDTO> questions, Guid evaluationFormGuid)
             : base(name, formEvaluation, questions)
         {
-
+            EvaluationFormGuid = evaluationFormGuid;
         }
         public Guid EvaluationFormGuid { get; set; }
+    }
+    public record EvaluationFormListDTO : PageList<GetEvaluationFormDTO>
+    {
+    }
+    public record UpdateEvaluationFormDTO : GetEvaluationFormDTO
+    {
+        protected UpdateEvaluationFormDTO(GetEvaluationFormDTO original) : base(original)
+        {
+        }
     }
 }
