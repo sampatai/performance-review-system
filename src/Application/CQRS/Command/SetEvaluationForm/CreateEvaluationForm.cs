@@ -1,5 +1,4 @@
-﻿using OfficePerformanceReview.Application.Common.Model.EvaluationForm;
-namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
+﻿namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
 {
     public static class CreateEvaluationForm
     {
@@ -12,7 +11,14 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
         }
         #endregion
         #region Validation
-        public sealed class Validator : ValidatorBase<EvaluationFormDTO> { }
+        public sealed class Validator : ValidatorBase<CreateEvaluationFormDTO>
+        {
+            public Validator()
+            {
+                RuleForEach(x => x.Questions)
+                         .SetValidator(new QuestionValidator<QuestionDTO>());
+            }
+        }
         #endregion
 
     }

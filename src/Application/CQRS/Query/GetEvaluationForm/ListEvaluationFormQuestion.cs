@@ -1,6 +1,4 @@
-﻿using OfficePerformanceReview.Application.Common.Model.EvaluationForm;
-
-namespace OfficePerformanceReview.Application.CQRS.Query.GetEvaluationForm
+﻿namespace OfficePerformanceReview.Application.CQRS.Query.GetEvaluationForm
 {
     public static class ListEvaluationFormQuestion
     {
@@ -28,8 +26,9 @@ namespace OfficePerformanceReview.Application.CQRS.Query.GetEvaluationForm
                     {
                         Data = result.Items.Select(x => new GetEvaluationFormDTO(
                             x.Name,
-                            x.EvaluationType,
-                            x.Questions.Select(a => new QuestionDTO(a.QuestionText, a.QuestionType, a.IsRequired)), x.EvaluationFormGuid)
+                           new NameValue( x.EvaluationType.Id,x.EvaluationType.Name),
+                            x.Questions.Select(a => new GetQuestionDTO(a.QuestionText, new NameValue(a.QuestionType.Id,a.QuestionType.Name), a.IsRequired,a.QuestionGuid)), 
+                            x.EvaluationFormGuid)
                         ),
                         TotalRecords = result.TotalCount
                     };

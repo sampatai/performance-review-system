@@ -73,6 +73,22 @@ namespace OfficePerformanceReview.Infrastructure.Repository
     ILogger<ReadonlyEvaluationFormTemplateRepository> logger)
         : IReadonlyEvaluationFormTemplateRepository
     {
+        public async Task<bool> Exists(Guid evaluationFormTemplateGuid, CancellationToken cancellationToken)
+        {
+            try
+            {
+
+                return await performanceReviewDbContext
+                    .EvaluationFormTemplates                   
+                    .AnyAsync(x => x.EvaluationFormGuid == evaluationFormTemplateGuid, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Exists {evaluationFormTemplateGuid}", evaluationFormTemplateGuid);
+                throw;
+            }
+        }
+
         public async Task<(IEnumerable<EvaluationFormTemplate> Items, int TotalCount)> GetAllAsync(FilterBase filter, CancellationToken cancellationToken)
         {
             try

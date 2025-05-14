@@ -1,5 +1,5 @@
-﻿using OfficePerformanceReview.Application.Common.Model.EvaluationForm;
-using OfficePerformanceReview.Application.CQRS.Command.EvaluationForm;
+﻿using OfficePerformanceReview.Application.CQRS.Command.EvaluationForm;
+using OfficePerformanceReview.Application.CQRS.Command.SetEvaluationForm;
 using OfficePerformanceReview.Application.CQRS.Query.GetEvaluationForm;
 
 namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
@@ -33,6 +33,23 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
              .WithSummary("Fetch list of forms including questions")
              .Produces(StatusCodes.Status200OK)
              .Produces(StatusCodes.Status400BadRequest);
+
+            group.MapPut("/{evaluationGuid:guid}", async (Guid evaluationGuid, UpdateEvaluationFormDTO dto,
+                                                          ISender sender, CancellationToken cancellationToken) =>
+            {
+                if (evaluationGuid != Guid.Empty)
+                {
+                    return Results.BadRequest("Mismatched GUID in route and payload.");
+                }
+
+                await sender.Send(new UpdateEvaluationForm.Command(dto), cancellationToken);
+                return Results.Ok();
+            })
+            .WithName("UpdateEvaluationForm")
+            .WithSummary("Update an existing evaluation form")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest);
+
         }
     }
 }
