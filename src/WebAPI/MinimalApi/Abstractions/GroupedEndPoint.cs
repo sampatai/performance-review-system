@@ -7,26 +7,10 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Abstractions
         protected abstract string Tag { get; }
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            RouteGroupBuilder group;
-
-            // If using versioning, the RouteGroupBuilder will be passed in
-            if (app is RouteGroupBuilder versionedGroup)
-            {
-                group = versionedGroup.MapGroup($"/{Group}")
-                                      .WithTags(Tag)
-                                      .RequireAuthorization()
-                                      .WithOpenApi();
-            }
-            else
-            {
-                group = app.MapGroup($"/api/{Group}")
+            Configure(app.MapGroup($"/api/{Group}")
                            .WithTags(Tag)
                            .RequireAuthorization()
-                           .WithOpenApi();
-            }
-
-            Configure(group);
-
+                           .WithOpenApi());
         }
         protected abstract void Configure(RouteGroupBuilder group);
     }

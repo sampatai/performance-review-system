@@ -75,15 +75,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-//ApiVersionSet apiVersionSet = app.NewApiVersionSet()
-//    .HasApiVersion(new ApiVersion(1))
-//    .ReportApiVersions()
-//    .Build();
+ApiVersionSet apiVersionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .ReportApiVersions()
+    .Build();
 
-//RouteGroupBuilder versionedGroup = app
-//    .MapGroup("api/v{version:apiVersion}")
-//    .WithApiVersionSet(apiVersionSet)
-//    .HasApiVersion(1);
+RouteGroupBuilder versionedGroup = app
+    .MapGroup("api/v{version:apiVersion}")
+    .WithApiVersionSet(apiVersionSet)
+    .HasApiVersion(1);
 
 
 app.MapEndpoints();

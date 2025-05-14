@@ -5,9 +5,9 @@ namespace OfficePerformanceReview.Application.CQRS.Query.GetEvaluationForm
     public static class ListEvaluationFormQuestion
     {
         #region Query
-        public record Query : FilterBase, IRequest, IRequest<EvaluationFormListDTO>
+        public record Query : FilterBase, IRequest<EvaluationFormListDTO>
         {
-            protected Query(FilterBase original) : base(original)
+            public Query(FilterBase original) : base(original)
             {
             }
         }
@@ -21,7 +21,24 @@ namespace OfficePerformanceReview.Application.CQRS.Query.GetEvaluationForm
         {
             public async Task<EvaluationFormListDTO> Handle(Query request, CancellationToken cancellationToken)
             {
-                throw new NotImplementedException();
+                try
+                {
+                    var result = await evaluationFormTemplateRepository.GetAllAsync(request, cancellationToken);
+                    return new EvaluationFormListDTO
+                    {
+                        Data = result.Items.Select(x => new GetEvaluationFormDTO(
+                            x.Name,
+                            x.EvaluationType,
+                            x.Questions.Select(a => new QuestionDTO(a.QuestionText, a.QuestionType, a.IsRequired)), x.EvaluationFormGuid)
+                        ),
+                        TotalRecords = result.TotalCount
+                    };
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "{@request}", request);
+                    throw;
+                }
             }
         }
         #endregion
