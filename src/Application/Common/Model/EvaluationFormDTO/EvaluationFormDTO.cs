@@ -1,30 +1,31 @@
-﻿using OfficePerformanceReview.Domain.Questions.Enum;
-using OfficeReview.Domain.Questions.Enum;
+﻿
 
-namespace OfficePerformanceReview.Application.Common.Model.EvaluationForm
-{
-    public record EvaluationFormDTO(string Name, FormEvaluation FormEvaluation, IEnumerable<QuestionDTO> Questions);
+public record QuestionDTO(string Question, NameValue QuestionType, bool IsRequired);
 
-    public record QuestionDTO(string Question, QuestionType QuestionType, bool IsRequired);
 
-    public record CreateEvaluationFormDTO : EvaluationFormDTO
-    {
-        public CreateEvaluationFormDTO(string name, FormEvaluation formEvaluation,
-            IEnumerable<QuestionDTO> questions)
-            : base(name, formEvaluation, questions)
-        {
-        }
-    }
+public record GetQuestionDTO(string Question, NameValue QuestionType, bool IsRequired, Guid QuestionGuid)
+    : QuestionDTO(Question, QuestionType, IsRequired);
+public record EvaluationFormDTO(string Name, NameValue FormEvaluation);
 
-    public record UpdateEvaluationFormDTO : EvaluationFormDTO
-    {
-        public UpdateEvaluationFormDTO(string name, FormEvaluation formEvaluation,
-            IEnumerable<QuestionDTO> questions,
-            Guid evaluationFormGuid)
-            : base(name, formEvaluation, questions)
-        {
+public record CreateEvaluationFormDTO(
+    string Name,
+    NameValue FormEvaluation,
+    IEnumerable<QuestionDTO> Questions
+) : EvaluationFormDTO(Name, FormEvaluation);
 
-        }
-        public Guid EvaluationFormGuid { get; set; }
-    }
-}
+public record GetEvaluationFormDTO(
+    string Name,
+    NameValue FormEvaluation,
+    IEnumerable<GetQuestionDTO> Questions,
+    Guid EvaluationFormGuid
+) : EvaluationFormDTO(Name, FormEvaluation);
+
+public record EvaluationFormListDTO : PageList<GetEvaluationFormDTO>;
+
+
+public record UpdateEvaluationFormDTO(
+    string Name,
+    NameValue FormEvaluation,
+    IEnumerable<GetQuestionDTO> Questions,
+    Guid EvaluationFormGuid
+) : GetEvaluationFormDTO(Name, FormEvaluation, Questions, EvaluationFormGuid);

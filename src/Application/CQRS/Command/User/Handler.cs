@@ -1,5 +1,4 @@
-﻿using OfficePerformanceReview.Application.Common.Repository;
-using OfficeReview.Domain.Profile.Enums;
+﻿using OfficeReview.Domain.Profile.Enums;
 using OfficeReview.Shared.SeedWork;
 
 namespace OfficePerformanceReview.Application.CQRS.Command.User

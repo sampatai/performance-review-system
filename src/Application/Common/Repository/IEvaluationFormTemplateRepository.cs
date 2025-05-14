@@ -5,7 +5,10 @@ namespace OfficePerformanceReview.Application.Common.Repository
 {
     public interface IReadonlyEvaluationFormTemplateRepository : IReadOnlyRepository<EvaluationFormTemplate>
     {
-
+        Task<(IEnumerable<EvaluationFormTemplate> Items, int TotalCount)> GetAllAsync(
+            FilterBase filter,
+            CancellationToken cancellationToken);
+        Task<bool> Exists(Guid evaluationFormTemplateGuid, CancellationToken cancellationToken);
     }
     public interface IEvaluationFormTemplateRepository : IRepository<EvaluationFormTemplate>
     {

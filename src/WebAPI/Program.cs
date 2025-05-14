@@ -76,16 +76,16 @@ app.UseAuthorization();
 app.MapControllers();
 
 ApiVersionSet apiVersionSet = app.NewApiVersionSet()
-    .HasApiVersion(new ApiVersion(1, 0))
+    .HasApiVersion(new ApiVersion(1))
     .ReportApiVersions()
     .Build();
 
 RouteGroupBuilder versionedGroup = app
     .MapGroup("api/v{version:apiVersion}")
     .WithApiVersionSet(apiVersionSet)
-    .HasApiVersion(1.0);
+    .HasApiVersion(1);
 
 
-app.MapEndpoints(versionedGroup);
+app.MapEndpoints();
 
 app.Run();

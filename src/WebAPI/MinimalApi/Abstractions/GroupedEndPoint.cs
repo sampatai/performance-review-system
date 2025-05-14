@@ -4,27 +4,13 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Abstractions
     public abstract class GroupedEndPoint : IEndpoint
     {
         protected abstract string Group { get; }
-        protected virtual string Tag => Group;
+        protected abstract string Tag { get; }
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            RouteGroupBuilder group;
-
-            // If using versioning, the RouteGroupBuilder will be passed in
-            if (app is RouteGroupBuilder versionedGroup)
-            {
-                group = versionedGroup.MapGroup($"/{Group}")
-                                      .WithTags(Tag)
-                                      .WithOpenApi();
-            }
-            else
-            {
-                group = app.MapGroup($"/api/{Group}")
+            Configure(app.MapGroup($"/api/{Group}")
                            .WithTags(Tag)
-                           .WithOpenApi();
-            }
-
-            Configure(group);
-            
+                           .RequireAuthorization()
+                           .WithOpenApi());
         }
         protected abstract void Configure(RouteGroupBuilder group);
     }

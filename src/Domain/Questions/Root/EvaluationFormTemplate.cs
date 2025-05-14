@@ -30,10 +30,13 @@ namespace OfficeReview.Domain.Questions.Root
             IsActive = true;
             this.EvaluationType = formEvaluation;
         }
-        public void SetEvaluationForm(string name)
+        public void SetEvaluationForm(string name, FormEvaluation formEvaluation)
         {
             Guard.Against.NullOrEmpty(name, nameof(name));
+            Guard.Against.Null(formEvaluation, nameof(formEvaluation));
+
             Name = name;
+            this.EvaluationType = formEvaluation;
         }
         public void SetDelete()
         {
