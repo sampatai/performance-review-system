@@ -1,7 +1,6 @@
 ﻿using OfficePerformanceReview.Application.Common.Model.EvaluationForm;
 using OfficePerformanceReview.Application.CQRS.Command.EvaluationForm;
 using OfficePerformanceReview.Application.CQRS.Query.GetEvaluationForm;
-using OfficePerformanceReview.Application.CQRS.Query.User;
 
 namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
 {
