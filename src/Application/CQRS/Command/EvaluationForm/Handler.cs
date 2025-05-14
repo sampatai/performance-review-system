@@ -23,7 +23,7 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                     new QuestionType(x.QuestionType.Id, x.QuestionType.Name),
                     x.IsRequired)));
                 await evaluationFormTemplateRepository.CreateAsync(evaluationForm, cancellationToken);
-                await evaluationFormTemplateRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
+                await evaluationFormTemplateRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@
 {
     public static class GroupConstraints
     {
-        public const string _EVALUATION_FROM_GROUP = "Evaluation From";
+        public const string _EVALUATION_FROM_GROUP = "EvaluationFrom";
+        public const string _EVALUATION_TO_TAG = "Evaluation Form Question";
     }
 }
