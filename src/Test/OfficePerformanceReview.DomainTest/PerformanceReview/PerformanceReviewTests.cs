@@ -42,10 +42,10 @@ namespace OfficePerformanceReview.Tests
            );
         }
 
-        private PerformanceReview _SetPerformanceReview()
+        private PerformanceReviewCollection _SetPerformanceReview()
         {
-            return new Faker<PerformanceReview>()
-                .CustomInstantiator(f => new PerformanceReview(_completedBy,
+            return new Faker<PerformanceReviewCollection>()
+                .CustomInstantiator(f => new PerformanceReviewCollection(_completedBy,
                _appraisedName,
                 _reviewDate, _performanceOverviewId))
                 .RuleFor(pr => pr.Feedbacks, f => new Feedback(FeedbackStatus.Pending));
@@ -99,7 +99,7 @@ namespace OfficePerformanceReview.Tests
             // Assert
             Assert.That(performanceReview.Evaluators, Has.Some.Matches<PeerEvaluation>(
                 e => e.CompletedBy.Id == completedById && e.CompletedBy.Name == completedBy
-                && e.DeadLine == deadline));
+                ));
         }
 
         [Test]

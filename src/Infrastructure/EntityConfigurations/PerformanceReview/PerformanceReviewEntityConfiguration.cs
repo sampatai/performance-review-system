@@ -1,11 +1,11 @@
 ﻿using OfficePerformanceReview.Domain.PerformanceReview.Root;
 
 namespace OfficePerformanceReview.Infrastructure.EntityConfigurations;
-internal class PerformanceReviewEntityConfiguration : IEntityTypeConfiguration<PerformanceReview>
+internal class PerformanceReviewEntityConfiguration : IEntityTypeConfiguration<PerformanceReviewCollection>
 {
-    public void Configure(EntityTypeBuilder<PerformanceReview> builder)
+    public void Configure(EntityTypeBuilder<PerformanceReviewCollection> builder)
     {
-        builder.ToTable("PerformanceReviews");
+        builder.ToTable("PerformanceReviewCollections");
         builder.Ignore(b => b.DomainEvents);
 
         builder.Property(o => o.Id);
@@ -46,8 +46,7 @@ internal class PerformanceReviewEntityConfiguration : IEntityTypeConfiguration<P
             a.Ignore(b => b.DomainEvents);
             a.Property(st => st.PeerEvaluationGuid).IsRequired();
             a.HasIndex(st => st.PeerEvaluationGuid).IsUnique();
-            a.Property(st => st.ReviewDate).IsRequired();
-            a.Property(st => st.DeadLine).IsRequired();
+            a.Property(st => st.ReviewDate).IsRequired();            
             a.Property(st => st.IsActive).IsRequired();
 
             a.OwnsOne(e => e.EvaluationType, q =>

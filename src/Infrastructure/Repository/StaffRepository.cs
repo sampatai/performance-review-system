@@ -204,7 +204,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                               join ur in performanceReviewDbContext.UserRoles on u.Id equals ur.UserId
                               join r in performanceReviewDbContext.Roles on ur.RoleId equals r.Id
                               where u.StaffGuid.Equals(staffId)
-                              select new EditUserModel(u.FirstName, u.LastName, u.Email, u.Team.Id, r.Id, u.StaffGuid)
+                              select new EditUserModel(u.FirstName, u.LastName, u.Email, u.Team.Id, r.Id, u.ManagerId, u.StaffGuid)
                              )
                              .FirstOrDefaultAsync(cancellationToken);
             }

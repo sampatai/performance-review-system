@@ -1,4 +1,5 @@
 ﻿using OfficePerformanceReview.Domain.Questions.Enum;
+using OfficePerformanceReview.Domain.Questions.ValueObjects;
 using OfficeReview.Domain.Questions.Entities;
 using OfficeReview.Domain.Questions.Enum;
 using OfficeReview.Shared.Exceptions;
@@ -18,7 +19,7 @@ namespace OfficeReview.Domain.Questions.Root
         public FormEvaluation EvaluationType { get; private set; }
         public IReadOnlyList<Question> Questions => _Questions.AsReadOnly();
 
-        public EvaluationFormTemplate(string name, 
+        public EvaluationFormTemplate(string name,
             FormEvaluation formEvaluation)
         {
             Guard.Against.NullOrEmpty(name, nameof(name));
@@ -50,14 +51,19 @@ namespace OfficeReview.Domain.Questions.Root
         {
             _Questions.AddRange(questions);
         }
-        public void SetQuestion(Guid questionGuid, string question,QuestionType questionType)
+        public void SetQuestion(Guid questionGuid, string question,
+            QuestionType questionType,
+            bool isRequired,
+            IEnumerable<QuestionOption>? options = null,
+            int? ratingMin = null,
+            int? ratingMax = null)
         {
             var single = _Questions
                   .Where(x => x.IsActive && x.QuestionGuid == questionGuid)
                   .SingleOrDefault();
             if (single is null)
                 throw new OfficeReviewDomainException("Invalid question Guid");
-            single.SetQuestion(question, questionType);
+            single.SetQuestion(question, questionType, isRequired, options, ratingMin, ratingMax);
 
         }
         public void SetDeActivateQuestion(Guid questionGuid)

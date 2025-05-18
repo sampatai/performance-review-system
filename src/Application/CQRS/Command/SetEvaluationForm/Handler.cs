@@ -1,5 +1,6 @@
 ﻿using OfficePerformanceReview.Application.CQRS.Command.SetEvaluationForm;
 using OfficePerformanceReview.Domain.Questions.Enum;
+using OfficePerformanceReview.Domain.Questions.ValueObjects;
 using OfficeReview.Domain.Questions.Entities;
 using OfficeReview.Domain.Questions.Enum;
 using OfficeReview.Domain.Questions.Root;
@@ -46,7 +47,7 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                 foreach (var question in request.Questions.Where(x => x.QuestionGuid != Guid.Empty))
                 {
                     evaluationForm.SetQuestion(question.QuestionGuid, question.Question,
-                        new QuestionType((int)question.QuestionType.Id, question.QuestionType.Name));
+                        new QuestionType((int)question.QuestionType.Id, question.QuestionType.Name), question.IsRequired, question.Options?.Select(x => new QuestionOption(x.Option)), question.RatingMin, question.RatingMax);
                 }
                 await evaluationFormTemplateRepository.UpdateAsync(evaluationForm, cancellationToken);
                 await evaluationFormTemplateRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);

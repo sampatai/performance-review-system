@@ -1,23 +1,17 @@
 ﻿namespace OfficePerformanceReview.Application.Common.Model
 {
-    public record RegisterUserModel(string FirstName, string LastName, string Email, int Team, long Role);
+    public record RegisterUserModel(string FirstName, string LastName, string Email, int Team, long Role,long ManagerId);
 
     public record UserModel(Guid Id, string FirstName, string LastName, string Email, NameValue Team, NameValue Role);
 
-    public record EditUserModel : RegisterUserModel
-    {
-        public EditUserModel(string firstName,
-            string lastName,
-            string email,
-            int team,
-            long role,
-            Guid staffGuid)
-            : base(firstName, lastName, email, team, role)
-        {
-            StaffGuid = staffGuid;
-        }
-        public Guid StaffGuid { get; set; }
-    }
+    public record EditUserModel(string FirstName,
+            string LastName,
+            string EmailAddress,
+            int Team,
+            long Role,
+            long ManagerId,
+            Guid StaffGuid) : RegisterUserModel(FirstName, LastName, EmailAddress, Team, Role, ManagerId);  
+
 
     public record UserList : PageList<UserModel> { }
 }

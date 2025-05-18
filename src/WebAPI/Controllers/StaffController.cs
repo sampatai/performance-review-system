@@ -78,7 +78,7 @@ namespace OfficePerformanceReview.WebAPI.Controllers
                     registerUser.LastName,
                     registerUser.Email,
                     registerUser.Team,
-                    registerUser.Role, staffId);
+                    registerUser.Role, registerUser.ManagerId, staffId);
 
                 await sender.Send(new UserUpdate.Command(command), cancellationToken);
 

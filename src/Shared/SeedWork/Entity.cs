@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System.ComponentModel.DataAnnotations;
 
 namespace OfficeReview.Shared.SeedWork;
 public abstract class Entity

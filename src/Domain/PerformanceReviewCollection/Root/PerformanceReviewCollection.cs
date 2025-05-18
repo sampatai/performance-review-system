@@ -6,9 +6,9 @@ using OfficeReview.Shared.Exceptions;
 
 namespace OfficePerformanceReview.Domain.PerformanceReview.Root
 {
-    public class PerformanceReview : AuditableEntity, IAggregateRoot
+    public class PerformanceReviewCollection : AuditableEntity, IAggregateRoot
     {
-        protected PerformanceReview() { }
+        protected PerformanceReviewCollection() { }
 
         public NameValue CompletedBy { get; private set; }
         public NameValue AppraisedName { get; private set; }
@@ -27,7 +27,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
         public IReadOnlyList<Objective> Objectives => _objectives.AsReadOnly();
 
 
-        public PerformanceReview(NameValue completedBy,
+        public PerformanceReviewCollection(NameValue completedBy,
             NameValue appraisedName,
             DateTime reviewDate,
             int performanceOverviewId)
@@ -40,7 +40,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Root
             this.CompletedBy = completedBy;
             this.AppraisedName = appraisedName;
             this.ReviewDate = reviewDate;
-            this.EvaluationType = FormEvaluation.SelfManagerEvaluation;
+            this.EvaluationType = FormEvaluation.SelfEvaluation;
             FeedbackStatus = FeedbackStatus.Pending;
             PerformanceOverviewId = performanceOverviewId;
             PerformanceReviewGuid = Guid.NewGuid();
