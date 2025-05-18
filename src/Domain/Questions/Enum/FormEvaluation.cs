@@ -8,7 +8,8 @@
         public static FormEvaluation InternEvaluation = new(4, nameof(InternEvaluation));
         public static FormEvaluation ExternalEvaluation = new(5, "External Evaluation");
         public static FormEvaluation SelfEvaluation = new(6, "Self Evaluation");
-
+        public static FormEvaluation SubordinateEvaluation = new(6, "Subordinate Evaluation");
+        public static FormEvaluation CustomerClientReviews = new(6, "Customer/Client Reviews");
         public FormEvaluation(int id, string name) : base(id, name)
         {
         }
