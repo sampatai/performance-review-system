@@ -17,7 +17,8 @@ namespace OfficePerformanceReview.Domain.Common.ValueObjects
             Guard.Against.Null(start, nameof(start));
             Guard.Against.Null(end, nameof(end));
             Guard.Against.OutOfRange(start, nameof(start), DateOnly.MinValue, end);
-           
+            Guard.Against.OutOfRange(end, nameof(end), start, DateOnly.MaxValue);
+
             Start = start;
             End = end;
         }

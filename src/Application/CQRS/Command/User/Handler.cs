@@ -14,7 +14,8 @@ namespace OfficePerformanceReview.Application.CQRS.Command.User
                 Staff userToAdd = new(Enumeration.FromValue<Team>(request.Team),
                     request.FirstName,
                     request.LastName,
-                    request.Email);
+                    request.Email,
+                    request.ManagerId);
 
                 var result = await staffRepository.CreateAsync(userToAdd, "Password@1");
                 if (result.Succeeded)
@@ -36,7 +37,8 @@ namespace OfficePerformanceReview.Application.CQRS.Command.User
                 Staff userToUpdate = await staffRepository.FindByIdAsync(request.StaffGuid, cancellationToken);
                 userToUpdate.SetStaff(Enumeration.FromValue<Team>(request.Team),
                     request.FirstName,
-                    request.LastName);
+                    request.LastName,
+                    request.ManagerId);
 
                 var result = await staffRepository.UpdateAsync(userToUpdate);
                 string role = Enumeration.FromValue<Role>(Convert.ToInt32(request.Role)).Name;

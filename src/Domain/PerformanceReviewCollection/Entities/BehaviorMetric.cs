@@ -1,5 +1,6 @@
 ﻿using OfficePerformanceReview.Domain.Common.ValueObjects;
 using OfficePerformanceReview.Domain.PerformanceReview.Enums;
+
 namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
 {
     public class BehaviorMetric : Entity

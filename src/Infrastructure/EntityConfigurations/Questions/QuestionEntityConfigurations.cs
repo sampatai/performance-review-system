@@ -35,5 +35,11 @@ internal class QuestionEntityConfigurations : IEntityTypeConfiguration<Question>
 
         builder.Property(e => e.IsRequired)
             .IsRequired();
+        builder.OwnsMany(q => q.Options, optionsBuilder =>
+        {
+            optionsBuilder.ToJson(); 
+        });
+        builder.Property(e => e.RatingMin);
+        builder.Property(e => e.RatingMax);
     }
 }

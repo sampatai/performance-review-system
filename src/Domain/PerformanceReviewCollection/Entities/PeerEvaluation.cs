@@ -8,7 +8,7 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
         public Guid PeerEvaluationGuid { get; private set; }
         public NameValue CompletedBy { get; private set; }
         public DateOnly? ReviewDate { get; private set; }
-        public DateOnly DeadLine { get; private set; }
+        
         public FormEvaluation EvaluationType { get; private set; }
         private List<QuestionFeedback> _FeedBacks = new();
         public IReadOnlyList<QuestionFeedback> Feedbacks => _FeedBacks.AsReadOnly();
@@ -25,7 +25,6 @@ namespace OfficePerformanceReview.Domain.PerformanceReview.Entities
             CompletedBy = new NameValue(staffId, name);
             FeedbackStatus = FeedbackStatus.Pending;
             IsActive = true;
-            DeadLine = deadLine;
             PeerEvaluationGuid = Guid.NewGuid();
         }
 
