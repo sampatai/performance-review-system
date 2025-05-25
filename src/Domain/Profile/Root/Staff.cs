@@ -8,7 +8,7 @@ public class Staff : IdentityUser<long>, IAggregateRoot
 
 {
     private Staff() { }
-    public Staff(Team team, string firstName, string lastName, string email,long managerId) : base()
+    public Staff(Team team, string firstName, string lastName, string email, long? managerId) : base()
     {
         Team = team;
         FirstName = Guard.Against.NullOrEmpty(firstName);
@@ -24,19 +24,17 @@ public class Staff : IdentityUser<long>, IAggregateRoot
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public Guid StaffGuid { get; set; }
-    public long ManagerId { get; set; }
+    public long? ManagerId { get; set; }
     public void SetRefereshToken(string token, DateTime expireDate)
     {
         _refreshTokens.Clear();
         _refreshTokens.Add(new RefreshToken(token, expireDate));
     }
-    public void SetStaff(Team team, string firstName, string lastName, long managerId)
+    public void SetStaff(Team team, string firstName, string lastName, long? managerId)
     {
         Team = team;
         FirstName = Guard.Against.NullOrEmpty(firstName);
         LastName = Guard.Against.NullOrEmpty(lastName);
-
-
     }
 
 }

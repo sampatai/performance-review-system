@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using OfficePerformanceReview.Application.Common.Model;
 using OfficePerformanceReview.Infrastructure.Extension;
+using OfficeReview.Domain.Profile.Enums;
+using OfficeReview.Domain.Profile.Root;
 
 
 
@@ -296,6 +298,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             }
         }
 
+        #region Helpers
         private Dictionary<string, string> GetStaffSortColumnMap()
         {
             return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -307,7 +310,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             { "role", "RoleName" },
           };
         }
-
+        #endregion
         public async Task<bool> CheckUserExistsAsync(Guid staffId, CancellationToken cancellationToken)
         {
             try
@@ -320,6 +323,29 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             {
 
                 logger.LogError(ex, "CheckUserExistsAsync {staffId}", staffId);
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Managers>> GetManagersAsync(int teamId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await (from u in performanceReviewDbContext.Users
+
+                              join ur in performanceReviewDbContext.UserRoles on u.Id equals ur.UserId
+                              join r in performanceReviewDbContext.Roles on ur.RoleId equals r.Id
+                              where u.Team.Id == teamId && r.Name == Role.Manager.Name
+                              select new Managers
+                             (
+                                  u.Id,
+                                  $"{u.FirstName} {u.LastName}"
+                              )).ToListAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+
+                logger.LogError(ex, "GetManagersAsync {teamId}", teamId);
                 throw;
             }
         }

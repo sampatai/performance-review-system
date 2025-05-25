@@ -91,6 +91,30 @@ namespace OfficePerformanceReview.WebAPI.Controllers
             }
         }
 
+        [HttpGet("manager/{teamId}")]
+        [SwaggerOperation(
+        Summary = "get managers by team",
+        Description = "get managers by team",
+       OperationId = "performance.staff.manager",
+       Tags = new[] { "users" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns a managers", type: typeof(Managers))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Application failed to process the request")]
+        public async Task<ActionResult<IEnumerable<Managers>>> GetManagers(int teamId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var command = new GetManagers.Query(teamId);
+                var result = await sender.Send(command, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "{@teamId}", teamId);
+                throw;
+            }
+        }
+
     }
 }
 
