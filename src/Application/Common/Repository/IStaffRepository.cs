@@ -24,6 +24,7 @@ namespace OfficePerformanceReview.Application.Common.Repository
         Task<(IEnumerable<UserModel> users, int totalCount)> GetStaffAsync(FilterBase filter, CancellationToken cancellationToken);
         Task<bool> CheckUserExistsAsync(Guid staffId, CancellationToken cancellationToken);
         Task<EditUserModel> FindByIdAsync(Guid staffId, CancellationToken cancellationToken);
+        Task<IEnumerable<Managers>> GetManagersAsync(int teamId, CancellationToken cancellationToken);
 
     }
 }

@@ -65,7 +65,7 @@ namespace OfficePerformanceReview.DomainTest.PerformanceReviewOverviewTest
             // Arrange
             var templates = new Faker<EvaluationFormTemplete>()
                 .CustomInstantiator(f => new EvaluationFormTemplete(
-                    f.Lorem.Sentence(), f.Random.Number()))
+                    f.Lorem.Sentence(), f.Random.Number(1,100)))
                 .Generate(3);
 
             // Act
