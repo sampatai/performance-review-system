@@ -23,7 +23,12 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                 evaluationForm.AddQuestion(request.Questions.Select(x => new Question(
                     x.Question,
                     new QuestionType((int)x.QuestionType.Id, x.QuestionType.Name),
-                    x.IsRequired)));
+                    x.IsRequired,
+                    x.AddRemarks,
+                    x.Options?.Select(x => new QuestionOption(x.Option)),
+                    x.QuestionType.Id == QuestionType.RatingScale.Id ? x.RatingMin : null,
+                    x.QuestionType.Id == QuestionType.RatingScale.Id ? x.RatingMax : null
+                    )));
                 await evaluationFormTemplateRepository.CreateAsync(evaluationForm, cancellationToken);
                 await evaluationFormTemplateRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             }
@@ -43,12 +48,25 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                 evaluationForm.AddQuestion(request.Questions.Where(x => x.QuestionGuid.Equals(Guid.Empty)).Select(x => new Question(
                     x.Question,
                     new QuestionType((int)x.QuestionType.Id, x.QuestionType.Name),
-                    x.IsRequired)));
-                foreach (var question in request.Questions.Where(x => x.QuestionGuid != Guid.Empty))
+                    x.IsRequired, x.AddRemarks)));
+
+
+                foreach (var question in request.Questions)
                 {
-                    evaluationForm.SetQuestion(question.QuestionGuid, question.Question,
-                        new QuestionType((int)question.QuestionType.Id, question.QuestionType.Name), question.IsRequired, question.Options?.Select(x => new QuestionOption(x.Option)), question.RatingMin, question.RatingMax);
+                    int? ratingMin = question.QuestionType.Id == QuestionType.RatingScale.Id ? question.RatingMin : null;
+                    int? ratingMax = question.QuestionType.Id == QuestionType.RatingScale.Id ? question.RatingMax : null;
+                    evaluationForm.SetQuestion(
+                        question.QuestionGuid,
+                        question.Question,
+                        new QuestionType((int)question.QuestionType.Id, question.QuestionType.Name),
+                        question.IsRequired,
+                        question.AddRemarks,
+                        question.Options?.Select(x => new QuestionOption(x.Option)),
+                        ratingMin,
+                        ratingMax
+                    );
                 }
+
                 await evaluationFormTemplateRepository.UpdateAsync(evaluationForm, cancellationToken);
                 await evaluationFormTemplateRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             }

@@ -36,7 +36,7 @@ namespace OfficePerformanceReview.Infrastructure
                 r.WithOwner().HasForeignKey("Id");
                 r.Property<long>("Id").UseHiLo("reservationseq", "dbo");
                 r.HasKey("Id");
-                r.Property(res => res.Token).IsRequired().HasMaxLength(500);
+                r.Property(res => res.Token).IsRequired().HasMaxLength(1000);
                 r.Property(res => res.DateCreatedUtc).IsRequired();
                 r.Property(res => res.DateExpiresUtc).IsRequired();
 

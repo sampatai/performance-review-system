@@ -32,6 +32,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
                     question: Faker.Lorem.Sentence(),
                     questionType: QuestionType.SingleChoice,
                     isRequired: true,
+                    addRemarks: true,
                     options: options
                 ))
             );
@@ -153,6 +154,7 @@ namespace OfficePerformanceReview.DomainTest.QuestionsTest
                 question.QuestionGuid,
                 newText,
                 newType,
+                true,
                 true,
                 newOptions
             );

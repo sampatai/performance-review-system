@@ -7,24 +7,24 @@ namespace OfficeReview.Domain.Questions.Entities
     {
         protected Question()
         {
-
         }
+
         public Guid QuestionGuid { get; private set; }
         public string QuestionText { get; private set; }
         public bool IsDeleted { get; private set; }
         public bool IsActive { get; private set; }
         public QuestionType QuestionType { get; private set; }
-        public bool IsRequired { get; private set; }  // Whether the question is required
-
+        public bool IsRequired { get; private set; } 
         public IEnumerable<QuestionOption> Options { get; private set; } = [];
         public int? RatingMin { get; private set; }
         public int? RatingMax { get; private set; }
-
+        public bool AddRemarks { get; private set; }
         public Question(
             string question,
             QuestionType questionType,
-            bool isRequired = false,
-            List<QuestionOption>? options = null,
+            bool isRequired,
+            bool addRemarks ,
+            IEnumerable<QuestionOption>? options = null,
             int? ratingMin = null,
             int? ratingMax = null)
         {
@@ -33,6 +33,7 @@ namespace OfficeReview.Domain.Questions.Entities
                 Guard.Against.Null(questionType, nameof(questionType));
                 IsActive = true;
                 IsDeleted = false;
+                AddRemarks = addRemarks;
                 QuestionText = question;
                 QuestionGuid = Guid.NewGuid();
                 QuestionType = questionType;
@@ -44,7 +45,7 @@ namespace OfficeReview.Domain.Questions.Entities
                     Options = options!;
                 }
 
-                if (questionType == QuestionType.RatingScale && questionType == QuestionType.RatingAndText)
+                if (questionType == QuestionType.RatingScale)
                 {
                     Guard.Against.Null(ratingMin, nameof(ratingMin));
                     Guard.Against.Null(ratingMax, nameof(ratingMax));
@@ -58,6 +59,7 @@ namespace OfficeReview.Domain.Questions.Entities
         internal void SetQuestion(string question,
             QuestionType questionType,
             bool isRequired,
+            bool addRemarks,
             IEnumerable<QuestionOption>? options = null,
             int? ratingMin = null,
             int? ratingMax = null)
@@ -67,13 +69,14 @@ namespace OfficeReview.Domain.Questions.Entities
             QuestionText = question;
             QuestionType = questionType;
             IsRequired = isRequired;
+            AddRemarks = addRemarks;
             if (questionType == QuestionType.MultipleChoice || questionType == QuestionType.SingleChoice)
             {
                 Guard.Against.NullOrEmpty(options, nameof(options));
                 Options = options!;
             }
 
-            if (questionType == QuestionType.RatingScale || questionType == QuestionType.RatingAndText)
+            if (questionType == QuestionType.RatingScale)
             {
                 Guard.Against.Null(ratingMin, nameof(ratingMin));
                 Guard.Against.Null(ratingMax, nameof(ratingMax));

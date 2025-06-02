@@ -75,8 +75,9 @@
                         ;
                     var refreshToken = jwtService.CreateRefreshToken();
                     var token = await jwtService.CreateJWT(user);
-
-                    user.SetRefereshToken(refreshToken.Token, refreshToken.DateExpiresUtc);
+                    var updateuser = await staffRepository
+                        .FindByIdAsync(user.StaffGuid, cancellationToken);
+                    updateuser.SetRefereshToken(refreshToken.Token, refreshToken.DateExpiresUtc);
                     await staffRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
                     return new LoginResponse("Login Successfull", false,

@@ -1,18 +1,15 @@
-﻿
-
-using OfficePerformanceReview.Domain.Questions.ValueObjects;
-
-public record QuestionDTO(string Question, NameValue QuestionType, bool IsRequired, IEnumerable<OptionsDTO>? Options,
+﻿public record QuestionDTO(string Question, NameValue QuestionType,
+    bool IsRequired, bool AddRemarks, IEnumerable<OptionsDTO>? Options,
             int? RatingMin,
             int? RatingMax);
 
 public record OptionsDTO(string Option);
-public record GetQuestionDTO(string Question,
-    NameValue QuestionType, bool IsRequired, Guid QuestionGuid,
+public record GetQuestionDTO( string Question,
+    NameValue QuestionType, bool IsRequired, bool AddRemarks, Guid QuestionGuid,
     IEnumerable<OptionsDTO>? Options,
             int? RatingMin,
             int? RatingMax)
-    : QuestionDTO(Question, QuestionType, IsRequired, Options, RatingMin, RatingMax);
+    : QuestionDTO(Question, QuestionType, IsRequired, AddRemarks, Options, RatingMin, RatingMax);
 public record EvaluationFormDTO(string Name, NameValue FormEvaluation);
 
 public record CreateEvaluationFormDTO(
