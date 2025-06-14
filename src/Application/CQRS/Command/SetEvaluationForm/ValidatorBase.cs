@@ -15,7 +15,7 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                 .WithMessage("Evaluation form name is required");
 
             RuleFor(x => x.FormEvaluation)
-                .Must(x => Enumeration.GetAll<FormEvaluation>().Any(a => a.Id == x.Id))
+                .Must(x => Enumeration.GetAll<FormEvaluation>().Any(a => a.Id == x))
                 .WithMessage("Invalid form evaluation.");
 
         }
@@ -32,8 +32,10 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                 .WithName("Question");
 
             RuleFor(x => x.QuestionType)
-                .Must(x => Enumeration.GetAll<QuestionType>().Any(a => a.Id == x.Id))
+                .Must(x => Enumeration.GetAll<QuestionType>().Any(a => a.Id == x))
                 .WithMessage("Invalid question type.");
         }
     }
+
+
 }

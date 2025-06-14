@@ -26,9 +26,9 @@
                     {
                         Data = result.Items.Select(x => new GetEvaluationFormDTO(
                             x.Name,
-                           new NameValue(x.EvaluationType.Id, x.EvaluationType.Name),
+                             new NameValue(x.EvaluationType.Id, x.EvaluationType.Name),
                             x.Questions.Select(a => new GetQuestionDTO(a.QuestionText, new NameValue(a.QuestionType.Id, a.QuestionType.Name),
-                            a.IsRequired, a.QuestionGuid, a.Options.Select(x => new OptionsDTO (x.OptionText)), a.RatingMin, a.RatingMax)),
+                            a.IsRequired, a.AddRemarks, a.QuestionGuid, a.Options.Select(x => new OptionsDTO(x.OptionText)), a.RatingMin, a.RatingMax)),
                             x.EvaluationFormGuid)
                         ),
                         TotalRecords = result.TotalCount

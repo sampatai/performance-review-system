@@ -22,7 +22,7 @@ namespace OfficePerformanceReview.Application.CQRS.Command.SetEvaluationForm
                     .MustAsync(readonlyEvaluationFormTemplateRepository.Exists)
                     .WithMessage("Form not exists.");
                 RuleForEach(x => x.Questions)
-                         .SetValidator(new QuestionValidator<GetQuestionDTO>());
+                         .SetValidator(new QuestionValidator<SetQuestionDTO>());
 
                 
             }

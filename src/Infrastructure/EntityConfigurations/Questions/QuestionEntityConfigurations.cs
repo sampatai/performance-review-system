@@ -35,6 +35,8 @@ internal class QuestionEntityConfigurations : IEntityTypeConfiguration<Question>
 
         builder.Property(e => e.IsRequired)
             .IsRequired();
+        builder.Property(e => e.AddRemarks)
+            .IsRequired();
         builder.OwnsMany(q => q.Options, optionsBuilder =>
         {
             optionsBuilder.ToJson(); 

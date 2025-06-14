@@ -54,6 +54,7 @@ namespace OfficeReview.Domain.Questions.Root
         public void SetQuestion(Guid questionGuid, string question,
             QuestionType questionType,
             bool isRequired,
+            bool addRemarks,
             IEnumerable<QuestionOption>? options = null,
             int? ratingMin = null,
             int? ratingMax = null)
@@ -63,7 +64,7 @@ namespace OfficeReview.Domain.Questions.Root
                   .SingleOrDefault();
             if (single is null)
                 throw new OfficeReviewDomainException("Invalid question Guid");
-            single.SetQuestion(question, questionType, isRequired, options, ratingMin, ratingMax);
+            single.SetQuestion(question, questionType, isRequired, addRemarks, options, ratingMin, ratingMax);
 
         }
         public void SetDeActivateQuestion(Guid questionGuid)
