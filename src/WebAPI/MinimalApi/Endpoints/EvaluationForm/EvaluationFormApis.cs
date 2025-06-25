@@ -19,7 +19,8 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
              .WithName("CreateEvaluationForm")
              .WithSummary("Create Evaluation Form")
              .Produces(StatusCodes.Status201Created)
-             .Produces(StatusCodes.Status400BadRequest);
+             .Produces(StatusCodes.Status400BadRequest)
+             .Produces(StatusCodes.Status500InternalServerError);
 
 
             group.MapPost("/list", async (FilterBase filter, ISender sender, CancellationToken cancellationToken) =>
@@ -32,12 +33,28 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
              .WithName("List of evaluation forms")
              .WithSummary("Fetch list of forms including questions")
              .Produces(StatusCodes.Status200OK)
-             .Produces(StatusCodes.Status400BadRequest);
+             .Produces(StatusCodes.Status400BadRequest)
+             .Produces(StatusCodes.Status500InternalServerError);
+
+            group.MapGet("/{evaluationGuid:guid}", async (Guid evaluationGuid,
+                ISender sender, CancellationToken cancellationToken) =>
+            {
+                if (evaluationGuid == Guid.Empty)
+                {
+                    return Results.BadRequest("Mismatched GUID in route and payload.");
+                }
+                await sender.Send(new GetEvaluationForm.Query(evaluationGuid), cancellationToken);
+                return Results.Ok();
+            }).WithName("GetEvaluationForm")
+            .WithSummary("fetch form template data based on guid")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
 
             group.MapPut("/{evaluationGuid:guid}", async (Guid evaluationGuid, UpdateEvaluationFormDTO dto,
                                                           ISender sender, CancellationToken cancellationToken) =>
             {
-                if (evaluationGuid != Guid.Empty)
+                if (evaluationGuid == Guid.Empty)
                 {
                     return Results.BadRequest("Mismatched GUID in route and payload.");
                 }
@@ -48,7 +65,8 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
             .WithName("UpdateEvaluationForm")
             .WithSummary("Update an existing evaluation form")
             .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest);
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
 
         }
     }
