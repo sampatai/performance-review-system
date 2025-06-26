@@ -43,7 +43,7 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
                 {
                     return Results.BadRequest("Mismatched GUID in route and payload.");
                 }
-                var result= await sender.Send(new GetEvaluationForm.Query(evaluationGuid), cancellationToken);
+                var result = await sender.Send(new GetEvaluationForm.Query(evaluationGuid), cancellationToken);
                 return Results.Ok(result);
             }).WithName("GetEvaluationForm")
             .WithSummary("fetch form template data based on guid")
@@ -58,8 +58,9 @@ namespace OfficePerformanceReview.WebAPI.MinimalApi.Endpoints.EvaluationForm
                 {
                     return Results.BadRequest("Mismatched GUID in route and payload.");
                 }
-
-                await sender.Send(new UpdateEvaluationForm.Command(dto), cancellationToken);
+                // Create a new instance of UpdateEvaluationFormDTO with the updated EvaluationFormGuid
+                var updatedDto = dto with { EvaluationFormGuid = evaluationGuid };
+                await sender.Send(new UpdateEvaluationForm.Command(updatedDto), cancellationToken);
                 return Results.Ok();
             })
             .WithName("UpdateEvaluationForm")
