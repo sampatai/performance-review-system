@@ -41,7 +41,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                     .EvaluationFormTemplates
                     .Include(x => x.Questions)
                     .AsSplitQuery()
-                    .AsNoTracking()
+                    .AsTracking()
                     .SingleOrDefaultAsync(x => x.EvaluationFormGuid == evaluationFormTemplateGuid, cancellationToken);
             }
             catch (Exception ex)
@@ -118,6 +118,24 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             catch (Exception ex)
             {
                 logger.LogError(ex, "GetStaffAsync {filter}", filter);
+                throw;
+            }
+        }
+
+        public async Task<EvaluationFormTemplate> GetAsync(Guid evaluationFormTemplateGuid, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await performanceReviewDbContext
+                    .EvaluationFormTemplates
+                    .Include(x => x.Questions)
+                    .AsSplitQuery()
+                    .SingleOrDefaultAsync(x => x.EvaluationFormGuid == evaluationFormTemplateGuid, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, " {evaluationFormTemplateGuid}", evaluationFormTemplateGuid);
+
                 throw;
             }
         }

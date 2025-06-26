@@ -9,6 +9,8 @@ namespace OfficePerformanceReview.Application.Common.Repository
             FilterBase filter,
             CancellationToken cancellationToken);
         Task<bool> Exists(Guid evaluationFormTemplateGuid, CancellationToken cancellationToken);
+        Task<EvaluationFormTemplate> GetAsync(Guid evaluationFormTemplateGuid, CancellationToken cancellationToken);
+
     }
     public interface IEvaluationFormTemplateRepository : IRepository<EvaluationFormTemplate>
     {

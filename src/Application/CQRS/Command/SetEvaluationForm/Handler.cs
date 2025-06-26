@@ -57,7 +57,7 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
 
                 var formEvaluationGetByvalue = Enumeration.FromValue<FormEvaluation>(request.FormEvaluation);
 
-                evaluationForm.SetEvaluationForm(request.Name, formEvaluationGetByvalue);
+                evaluationForm.SetEvaluationForm(request.Name, new FormEvaluation(formEvaluationGetByvalue.Id, formEvaluationGetByvalue.Name));
 
                 request.Questions.ToList().ForEach(q =>
                 {
