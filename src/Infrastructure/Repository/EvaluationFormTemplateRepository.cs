@@ -39,7 +39,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             {
                 return await performanceReviewDbContext
                     .EvaluationFormTemplates
-                    .Include(x => x.Questions)
+                    .Include(x => x.Questions.Where(x => !x.IsDeleted))
                     .AsSplitQuery()
                     .AsTracking()
                     .SingleOrDefaultAsync(x => x.EvaluationFormGuid == evaluationFormTemplateGuid, cancellationToken);
@@ -79,7 +79,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             {
 
                 return await performanceReviewDbContext
-                    .EvaluationFormTemplates                   
+                    .EvaluationFormTemplates
                     .AnyAsync(x => x.EvaluationFormGuid == evaluationFormTemplateGuid, cancellationToken);
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             try
             {
                 var query = performanceReviewDbContext.EvaluationFormTemplates
-                    .Include(x => x.Questions)
+                    .Include(x => x.Questions.Where(a => !a.IsDeleted))
                     .Where(x => x.IsDeleted == false);
 
                 var likeSearchTerm = $"%{filter.SearchTerm}%";
@@ -128,7 +128,7 @@ namespace OfficePerformanceReview.Infrastructure.Repository
             {
                 return await performanceReviewDbContext
                     .EvaluationFormTemplates
-                    .Include(x => x.Questions)
+                    .Include(x => x.Questions.Where(x => !x.IsDeleted))
                     .AsSplitQuery()
                     .SingleOrDefaultAsync(x => x.EvaluationFormGuid == evaluationFormTemplateGuid, cancellationToken);
             }

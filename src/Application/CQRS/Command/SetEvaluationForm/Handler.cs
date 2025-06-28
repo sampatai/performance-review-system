@@ -1,4 +1,5 @@
-﻿using OfficePerformanceReview.Application.CQRS.Command.SetEvaluationForm;
+﻿using Azure.Core;
+using OfficePerformanceReview.Application.CQRS.Command.SetEvaluationForm;
 using OfficePerformanceReview.Domain.Questions.Enum;
 using OfficePerformanceReview.Domain.Questions.ValueObjects;
 using OfficeReview.Domain.Questions.Entities;
@@ -20,25 +21,8 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
 
                 var evaluationForm = new EvaluationFormTemplate(request.Name, formEvaluationGetByvalue);
 
-                var questions = request.Questions.Select(q =>
-                {
-                    var questionType = Enumeration.FromValue<QuestionType>(q.QuestionType);
-                    int? ratingMin = questionType.Id == QuestionType.RatingScale.Id ? q.RatingMin : null;
-                    int? ratingMax = questionType.Id == QuestionType.RatingScale.Id ? q.RatingMax : null;
-                    var options = q.Options?.Select(opt => new QuestionOption(opt.Option));
+                evaluationForm.AddQuestion(GetQuestions(request.Questions));
 
-                    return new Question(
-                        q.Question,
-                        new QuestionType(questionType.Id, questionType.Name),
-                        q.IsRequired,
-                        q.AddRemarks,
-                        options,
-                        ratingMin,
-                        ratingMax
-                    );
-                });
-
-                evaluationForm.AddQuestion(questions);
                 await evaluationFormTemplateRepository.CreateAsync(evaluationForm, cancellationToken);
                 await evaluationFormTemplateRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             }
@@ -49,6 +33,7 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
             }
         }
 
+
         public async Task Handle(UpdateEvaluationForm.Command request, CancellationToken cancellationToken)
         {
             try
@@ -58,8 +43,55 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                 var formEvaluationGetByvalue = Enumeration.FromValue<FormEvaluation>(request.FormEvaluation);
 
                 evaluationForm.SetEvaluationForm(request.Name, new FormEvaluation(formEvaluationGetByvalue.Id, formEvaluationGetByvalue.Name));
+                SetQuestion(evaluationForm, request.Questions);
 
-                request.Questions.ToList().ForEach(q =>
+                evaluationForm.Questions
+                              .Where(q => !request.Questions.Any(rq => rq.QuestionGuid == q.QuestionGuid))
+                              .ToList()
+                              .ForEach(q => evaluationForm.SetDeleteQuestion(q.QuestionGuid));
+
+                evaluationForm.AddQuestion(GetQuestions(request.Questions
+                    .Where(t => t.QuestionGuid == Guid.Empty)));
+
+                await evaluationFormTemplateRepository.UpdateAsync(evaluationForm, cancellationToken);
+                await evaluationFormTemplateRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "{@request}", request);
+                throw;
+            }
+        }
+
+
+        #region DTO to Domain Model Conversion helper
+        private IEnumerable<Question> GetQuestions(IEnumerable<QuestionDTO> questions)
+        {
+            return questions.Select(q =>
+            {
+                var questionType = Enumeration.FromValue<QuestionType>(q.QuestionType);
+                int? ratingMin = questionType.Id == QuestionType.RatingScale.Id ? q.RatingMin : null;
+                int? ratingMax = questionType.Id == QuestionType.RatingScale.Id ? q.RatingMax : null;
+                var options = q.Options?.Select(opt => new QuestionOption(opt.Option));
+                return new Question(
+                    q.Question,
+                    new QuestionType(questionType.Id, questionType.Name),
+                    q.IsRequired,
+                    q.AddRemarks,
+                    options,
+                    ratingMin,
+                    ratingMax
+                );
+            });
+        }
+        private void SetQuestion(
+         EvaluationFormTemplate evaluationForm,
+        IEnumerable<SetQuestionDTO> questions)
+        {
+            questions
+                 .Where(t => t.QuestionGuid != Guid.Empty)
+                .ToList()
+                .ForEach(q =>
                 {
                     var questionType = Enumeration.FromValue<QuestionType>(q.QuestionType);
                     int? ratingMin = questionType.Id == QuestionType.RatingScale.Id ? q.RatingMin : null;
@@ -77,16 +109,8 @@ namespace OfficePerformanceReview.Application.CQRS.Command.EvaluationForm
                         ratingMax
                     );
                 });
-
-
-                await evaluationFormTemplateRepository.UpdateAsync(evaluationForm, cancellationToken);
-                await evaluationFormTemplateRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "{@request}", request);
-                throw;
-            }
         }
     }
+    #endregion
 }
+
