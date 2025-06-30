@@ -17,18 +17,21 @@ namespace OfficePerformanceReview.Infrastructure.Secrets
     {
         private readonly IAmazonSecretsManager _secretsManager;
         private readonly ILogger<AwsSecretService> _logger;
-        private readonly IOptions<AwsConfigurationOptions> _awsOptions;
-        public AwsSecretService(IOptions<AwsConfigurationOptions> options, ILogger<AwsSecretService> logger)
+        private readonly IOptions<AWSConfigurationOptions> _awsOptions;
+        public AwsSecretService(IOptions<AWSConfigurationOptions> options, 
+            ILogger<AwsSecretService> logger,
+           IAmazonSecretsManager amazonSecretsManager )
         {
             _awsOptions = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             // Do NOT pass credentials explicitly in production
-            var chain = new CredentialProfileStoreChain();
-            AWSCredentials awsCredentials;
-            if (chain.TryGetAWSCredentials(options.Value.Credentials, out awsCredentials))
-            {
-                _secretsManager = new AmazonSecretsManagerClient(awsCredentials, RegionEndpoint.APSoutheast2);
-            }
+            _secretsManager = amazonSecretsManager;
+            //var chain = new CredentialProfileStoreChain();
+            //AWSCredentials awsCredentials;
+            //if (chain.TryGetAWSCredentials(options.Value.Credentials, out awsCredentials))
+            //{
+            //    _secretsManager = new AmazonSecretsManagerClient(awsCredentials, RegionEndpoint.APSoutheast2);
+            //}
 
         }
 
@@ -44,7 +47,7 @@ namespace OfficePerformanceReview.Infrastructure.Secrets
                 var request = new GetSecretValueRequest
                 {
                     SecretId = secretName,
-                    VersionStage = _awsOptions.Value.SecretsManager.SecretVersion
+                    VersionStage = _awsOptions.Value.SecretsManager.DefaultSecretVersion
                 };
 
     

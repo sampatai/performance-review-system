@@ -11,7 +11,7 @@ namespace OfficePerformanceReview.WebAPI.DependencyExtensions
         internal static IServiceCollection AddAuthenticationWithBearer(
          this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<AwsConfigurationOptions>(configuration.GetSection("AWS"));
+            services.Configure<AWSConfigurationOptions>(configuration.GetSection("AWSConfiguration"));
             services.Configure<JwtOptions>(configuration.GetSection("JWT"));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -20,7 +20,7 @@ namespace OfficePerformanceReview.WebAPI.DependencyExtensions
                 var serviceProvider = services.BuildServiceProvider();
                 var awsSecretService = serviceProvider.GetRequiredService<IAwsSecretService>();
                 var jwtOptions = configuration.GetSection("JWT").Get<JwtOptions>() ?? new JwtOptions();
-                var awsOptions = configuration.GetSection("AWS").Get<AwsConfigurationOptions>() ?? new AwsConfigurationOptions();
+                var awsOptions = configuration.GetSection("AWSConfiguration").Get<AWSConfigurationOptions>() ?? new AWSConfigurationOptions();
 
                 var jwtSigningKey = await awsSecretService.GetSecretStringAsync(awsOptions.SecretsManager.SecretName);
 

@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Asp.Versioning.Builder;
 using OfficePerformanceReview.API.Middleware;
+using OfficePerformanceReview.Application.Common.Options;
 using OfficePerformanceReview.Application.DependencyExtensions;
 using OfficePerformanceReview.Infrastructure.DependencyExtensions;
 using OfficePerformanceReview.WebAPI.DependencyExtensions;
@@ -28,6 +29,7 @@ builder.Services.AddApiVersioning(options =>
 
 // Swagger with versioned support
 builder.Services.AddSwaggerGenWithAuth(builder.Configuration);
+builder.Services.Configure<AWSConfigurationOptions>(builder.Configuration.GetSection("AWSConfiguration"));
 
 // App-specific layers
 builder.Services.AddApplication();

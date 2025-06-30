@@ -25,7 +25,7 @@ namespace OfficePerformanceReview.Application.Common.Service
             IReadonlyStaffRepository staffRepository,
             ILogger<JWTService> logger,
             IAwsSecretService awsSecretService,
-            IOptions<AwsConfigurationOptions> awsOption,
+            IOptions<AWSConfigurationOptions> awsOption,
             IOptions<JwtOptions> jwtOptions
         ) : IJWTService
     {
