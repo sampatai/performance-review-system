@@ -1,8 +1,9 @@
-﻿using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
+﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using OfficePerformanceReview.Application.Common.Options;
 using OfficePerformanceReview.Application.Common.Repository;
 using OfficePerformanceReview.Domain.Profile.ValueObjects;
 using System;
@@ -20,9 +21,13 @@ namespace OfficePerformanceReview.Application.Common.Service
         Task<string> CreateJWT(Staff user);
 
     }
-    public class JWTService(IConfiguration config,
+    public class JWTService(
             IReadonlyStaffRepository staffRepository,
-            ILogger<JWTService> logger) : IJWTService
+            ILogger<JWTService> logger,
+            IAwsSecretService awsSecretService,
+            IOptions<AWSConfigurationOptions> awsOption,
+            IOptions<JwtOptions> jwtOptions
+        ) : IJWTService
     {
         public async Task<string> CreateJWT(Staff user)
         {
@@ -43,10 +48,10 @@ namespace OfficePerformanceReview.Application.Common.Service
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(userClaims),
-                    Expires = DateTime.UtcNow.AddMinutes(int.Parse(config["JWT:ExpiresInMinutes"]!)),
+                    Expires = DateTime.UtcNow.AddMinutes(jwtOptions.Value.ExpiresInMinutes),
                     SigningCredentials = credentials,
-                    Issuer = config["JWT:Issuer"],
-                    Audience = config["JWT:Audience"]
+                    Issuer = jwtOptions.Value.Issuer,
+                    Audience = jwtOptions.Value.Audience
                 };
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -70,11 +75,11 @@ namespace OfficePerformanceReview.Application.Common.Service
                 using var rng = RandomNumberGenerator.Create();
                 rng.GetBytes(tokenBytes);
 
-                return new RefreshToken(Convert.ToBase64String(tokenBytes), DateTime.UtcNow.AddDays(int.Parse(config["JWT:RefreshTokenExpiresInDays"]!)));       
+                return new RefreshToken(Convert.ToBase64String(tokenBytes), DateTime.UtcNow.AddDays(jwtOptions.Value.RefreshTokenExpiresInDays));
             }
             catch (Exception ex)
             {
-                logger.LogError(ex,"faild");
+                logger.LogError(ex, "faild");
                 throw;
             }
         }
@@ -83,10 +88,8 @@ namespace OfficePerformanceReview.Application.Common.Service
         {
             try
             {
-                var keyVaultUrl = config["AzureKeyVault:VaultUrl"] ?? "";
-                var secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
-                var secret = await secretClient.GetSecretAsync(config["AzureKeyVault:Secret"]);
-                return secret.Value.Value;
+
+                return await awsSecretService.GetSecretStringAsync(awsOption.Value.SecretsManager.SecretName);
             }
             catch (Exception ex)
 

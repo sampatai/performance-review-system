@@ -30,6 +30,7 @@ namespace OfficePerformanceReview.Application.DependencyExtensions
             services.AddScoped<IJWTService, JWTService>();
             services.AddScoped<ICurrentUserHelper, HttpContextCurrentUserHelper>();
         }
+       
 
     }
 }
