@@ -1,4 +1,16 @@
-﻿namespace OfficePerformanceReview.Infrastructure.DependencyExtensions
+﻿using Amazon.Runtime;
+using Amazon.SecretsManager;
+using Amazon;
+using Microsoft.Extensions.Options;
+using OfficePerformanceReview.Application.Common.Helper;
+using OfficePerformanceReview.Application.Common.Service;
+using OfficePerformanceReview.Infrastructure.Secrets;
+using OfficePerformanceReview.Application.Common.Options;
+using static System.Collections.Specialized.BitVector32;
+using System;
+using Amazon.Extensions.NETCore.Setup;
+
+namespace OfficePerformanceReview.Infrastructure.DependencyExtensions
 {
     public static class DependencyExtension
     {
@@ -40,14 +52,34 @@
             .AddEntityFrameworkStores<PerformanceReviewDbContext>() // Provide our context
             .AddSignInManager<SignInManager<Staff>>() // Use SignInManager
             .AddUserManager<UserManager<Staff>>() // Use UserManager to create users
-
             .AddDefaultTokenProviders(); // Enable token providers for email confirmation
 
             services.AddScoped<IStaffRepository, StaffRepository>();
             services.AddScoped<IReadonlyStaffRepository, ReadonlyStaffRepository>();
             services.AddScoped<IEvaluationFormTemplateRepository, EvaluationFormTemplateRepository>();
             services.AddScoped<IReadonlyEvaluationFormTemplateRepository, ReadonlyEvaluationFormTemplateRepository>();
+
+            services._RegisterServices();
             return services;
+        }
+        private static void _RegisterServices(this IServiceCollection services)
+        {
+
+
+
+            // Best Practice: Use the AWS SDK's built-in extension methods for DI.
+            // This registers the AmazonSecretsManagerClient with the correct lifecycle (Singleton by default).
+            // Add configuration
+            services.Configure<AWSOptions>();
+
+            // Bind AWSOptions and register AWS SDK
+            services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions("AWS"));
+            services.AddAWSService<IAmazonSecretsManager>();
+
+            // Register your custom service. The dependencies (IAmazonSecretsManager, IOptions<AwsOptions>, ILogger)
+            // will be automatically injected by the service container.
+            services.AddSingleton<IAwsSecretService, AwsSecretService>();
+
         }
 
     }

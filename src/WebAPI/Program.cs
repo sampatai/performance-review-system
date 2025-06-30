@@ -34,18 +34,11 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalhost",
-        policy => policy
-            .WithOrigins("http://localhost:4200", "http://localhost:8082")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials());
-});
+builder.Services.AddCorsPolicy(builder.Configuration);
 
 // Auth
 builder.Services.AddAuthorization();
+
 builder.Services.AddAuthenticationWithBearer(builder.Configuration);
 
 // Register endpoints

@@ -1,7 +1,7 @@
-﻿using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using OfficePerformanceReview.Application.Common.Options;
+using OfficePerformanceReview.Application.Common.Service;
 using System.Text;
 
 namespace OfficePerformanceReview.WebAPI.DependencyExtensions
@@ -11,27 +11,31 @@ namespace OfficePerformanceReview.WebAPI.DependencyExtensions
         internal static IServiceCollection AddAuthenticationWithBearer(
          this IServiceCollection services, IConfiguration configuration)
         {
-            var keyVaultUrl = configuration["AzureKeyVault:VaultUrl"];
-            var client = new SecretClient(new Uri(keyVaultUrl!), 
-                                          new DefaultAzureCredential());
-            var jwtKeySecret = client.GetSecret(configuration["AzureKeyVault:Secret"]);
-            var jwtSigningKey = jwtKeySecret.Value.Value;
+            services.Configure<AwsConfigurationOptions>(configuration.GetSection("AWS"));
+            services.Configure<JwtOptions>(configuration.GetSection("JWT"));
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(o =>
+            .AddJwtBearer(async (o) =>
             {
+                var serviceProvider = services.BuildServiceProvider();
+                var awsSecretService = serviceProvider.GetRequiredService<IAwsSecretService>();
+                var jwtOptions = configuration.GetSection("JWT").Get<JwtOptions>() ?? new JwtOptions();
+                var awsOptions = configuration.GetSection("AWS").Get<AwsConfigurationOptions>() ?? new AwsConfigurationOptions();
+
+                var jwtSigningKey = await awsSecretService.GetSecretStringAsync(awsOptions.SecretsManager.SecretName);
+
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["JWT:Issuer"],
-                    ValidAudience = configuration["JWT:Audience"],
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                                        Encoding.UTF8.GetBytes(jwtSigningKey)
-                        )
+                        Encoding.UTF8.GetBytes(jwtSigningKey)
+                    )
                 };
-
             });
             return services;
         }
