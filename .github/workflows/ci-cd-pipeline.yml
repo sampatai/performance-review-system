@@ -1,57 +1,67 @@
-# CI/CD Pipeline for .NET 9 Web API with Amazon ECS Deployment
-# -----------------------------------------------------------
-# This workflow automates the process of building, testing, containerizing,
-# and deploying your .NET Web API to Amazon ECS using Docker and ECR.
-# It runs on pushes and pull requests to dev, stage, and main branches.
-
+# .github/workflows/ci-cd.yml
 name: CI/CD Pipeline
 
 on:
   push:
-    branches: [dev, stage, main]      # Trigger on push to these branches
+    branches:
+      - dev
+      - stage
+      - main
   pull_request:
-    branches: [dev, stage, main]      # Trigger on PRs to these branches
+    branches:
+      - dev
+      - stage
+      - main
+
+# Apply least privilege access to workflow jobs
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build-and-test:
     name: Build and Test
-    runs-on: ubuntu-latest            # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
+      # Step 1: Checkout the latest version of the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup .NET 9 SDK
+      # Step 2: Setup .NET 9 SDK from official action
       - name: Setup .NET 9 SDK
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
 
-      # Step 3: Restore NuGet dependencies for all projects
+      # Step 3: Restore all NuGet dependencies from the solution file
       - name: Restore dependencies
         run: dotnet restore ./src/OfficePerformanceReview.sln
 
-      # Step 4: Build the solution in Release mode
+      # Step 4: Build the .NET solution in Release mode without restoring packages again
       - name: Build solution
         run: dotnet build ./src/OfficePerformanceReview.sln --configuration Release --no-restore
 
-      # Step 5: Run all tests in the solution
+      # Step 5: Run all tests in the solution with standard verbosity
       - name: Run tests
         run: dotnet test ./src/OfficePerformanceReview.sln --configuration Release --no-build --verbosity normal
 
   deploy:
-    name: Deploy
-    needs: build-and-test             # Only run if build-and-test succeeds
+    name: Deploy to Amazon ECS
+    needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/stage' || github.ref == 'refs/heads/main')
+    if: >
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/dev' ||
+       github.ref == 'refs/heads/stage' ||
+       github.ref == 'refs/heads/main')
 
     steps:
-      # Step 1: Checkout the repository code
+      # Step 1: Checkout code again in this job context
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Configure AWS credentials for CLI and Docker
+      # Step 2: Configure AWS credentials for deploying via CLI and SDK
       # Requires secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -60,57 +70,52 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Step 3: Login to Amazon ECR (Elastic Container Registry)
+      # Step 3: Login to Amazon ECR using IAM credentials
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # Step 4: Build, tag, and push Docker image to ECR
-      # Uses the commit SHA as the image tag for traceability
+      # Step 4: Build Docker image from WebAPI Dockerfile, tag with Git SHA, push to ECR
+      # Ensure: ECR_REPOSITORY secret contains full ECR URL including repository name
       - name: Build, tag, and push image to Amazon ECR
         env:
-          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}   # e.g., 123456789012.dkr.ecr.us-east-1.amazonaws.com/your-repo
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f ./WebAPI/Dockerfile .
           docker push $ECR_REPOSITORY:$IMAGE_TAG
 
-      # Step 5: Update ECS task definition with the new image
-      # The container-name must match the name in your ECS task definition
-      - name: Fill in the new image ID in the ECS task definition
+      # Step 5: Substitute image in ECS task definition template
+      # Requires ECS_TASK_DEFINITION secret containing task def template path or file content
+      - name: Render ECS task definition with new image
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ secrets.ECS_TASK_DEFINITION }} # Path to your ECS task definition JSON
-          container-name: webapi                              # Must match your ECS container name
+          task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
+          container-name: webapi
           image: ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
 
-      # Step 6: Deploy the updated task definition to ECS service
-      - name: Deploy Amazon ECS task definition
+      # Step 6: Deploy the updated ECS task definition to the target service
+      # Requires ECS_SERVICE and ECS_CLUSTER secrets
+      - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ secrets.ECS_SERVICE }}                # Your ECS service name
-          cluster: ${{ secrets.ECS_CLUSTER }}                # Your ECS cluster name
-          wait-for-service-stability: true                   # Wait until deployment is stable
+          service: ${{ secrets.ECS_SERVICE }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+          wait-for-service-stability: true
 
-      # Step 7: Optionally, upload published artifacts for debugging or further steps
+      # Step 7: Upload any published artifacts (if applicable)
+      # You must ensure ./publish directory exists from prior job/step or adjust path
       - name: Upload published artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: published-app
           path: ./publish
 
-# ---------------------------
-# How this workflow works:
-# ---------------------------
-# 1. On push or PR to dev, stage, or main, the workflow builds and tests your .NET solution.
-# 2. If the build and tests succeed, it builds a Docker image for your WebAPI, tags it with the commit SHA, and pushes it to Amazon ECR.
-# 3. It then updates your ECS task definition to use the new image and deploys it to your ECS service and cluster.
-# 4. The deployment waits for the ECS service to become stable before finishing.
-# 5. Artifacts are uploaded for optional debugging or further use.
-#
-# To use this workflow, you must:
-# - Create an ECR repository and ECS cluster/service.
-# - Store the required AWS and ECS secrets in your GitHub repository.
-# - Ensure your ECS task definition and container name match the workflow.
+# Additional Recommendations:
+# ----------------------------
+# 1. Use actions/cache for NuGet packages to improve speed.
+# 2. Add environment-specific deploy jobs using GitHub environments.
+# 3. Validate that secrets and ECS task definition are correctly formatted JSON or paths.
+# 4. Optionally add manual approvals for main branch deploy via protected environments.
