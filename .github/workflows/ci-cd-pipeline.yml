@@ -30,15 +30,15 @@ jobs:
 
       # Step 3: Restore NuGet dependencies for all projects
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore OfficePerformanceReview.sln
 
       # Step 4: Build the solution in Release mode
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build OfficePerformanceReview.sln --configuration Release --no-restore
 
       # Step 5: Run all tests in the solution
       - name: Run tests
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test OfficePerformanceReview.sln --configuration Release --no-build --verbosity normal
 
   deploy:
     name: Deploy
