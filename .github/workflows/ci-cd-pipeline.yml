@@ -81,7 +81,7 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f ./WebAPI/Dockerfile . # creates a Docker image using your Dockerfile
+         docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f ./src/WebAPI/Dockerfile ./src/WebAPI # creates a Docker image using your Dockerfile
           docker push $ECR_REPOSITORY:$IMAGE_TAG #  tags it using the ECR URL and commit SHA. and uploads it to your ECR
 
       # Step 5: Substitute image in ECS task definition template
