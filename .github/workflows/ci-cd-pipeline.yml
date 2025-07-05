@@ -92,7 +92,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ecs-task-definition.json #A Task Definition is a JSON file(Define container config)
-          container-name: webapi #Replaces the Docker image URI for your container named webapi
+          container-name: officepe-review-webapi #Replaces the Docker image URI for your container named webapi
           image: ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
 
       # Step 6: Deploy the updated ECS task definition to the target service
