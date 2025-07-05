@@ -87,11 +87,6 @@ jobs:
       # Step 5: Substitute image in ECS task definition template
       # Requires ECS_TASK_DEFINITION secret containing task def template path or file content
       # this template, replace the old image with the new one I just built, and give me a new version of the definition to deploy.
-     
-      # Write ECS task definition from secret to file
-      - name: Write ECS task definition to file
-        run: echo "${{ secrets.ECS_TASK_DEFINITION }}" > ecs-task-definition.json
-
       - name: Render ECS task definition with new image
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
