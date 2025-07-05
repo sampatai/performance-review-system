@@ -7,6 +7,7 @@
 		<UserSecretsId>352eabd1-0b36-4bcb-904c-3504880b3d0b</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+		<!-- The following properties are used for Docker containerization -->
 		<ContainerImageTags>1.0.0;latest</ContainerImageTags>
 		<ContainerRepository>officeperformancereviewwebapi</ContainerRepository>
 		<PublishProfile>DefaultContainer</PublishProfile>

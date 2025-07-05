@@ -1,4 +1,4 @@
-# .github/workflows/ci-cd.yml
+﻿# .github/workflows/ci-cd.yml
 name: CI/CD Pipeline
 
 on:
@@ -58,7 +58,7 @@ jobs:
 
     steps:
       # Step 1: Checkout code again in this job context
-      - name: Checkout code
+      - name: 🛠️ Checkout Repository
         uses: actions/checkout@v4
 
       # Step 2: Configure AWS credentials for deploying via CLI and SDK
@@ -70,7 +70,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Step 3: Login to Amazon ECR using IAM credentials
+      # Step 3: This GitHub Action uses the IAM credentials (from the GitHub Secrets) to authenticate Docker with Amazon ECR, so Docker can push images there.
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
@@ -81,30 +81,31 @@ jobs:
           ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f ./WebAPI/Dockerfile .
-          docker push $ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG -f ./WebAPI/Dockerfile . # creates a Docker image using your Dockerfile
+          docker push $ECR_REPOSITORY:$IMAGE_TAG #  tags it using the ECR URL and commit SHA. and uploads it to your ECR
 
       # Step 5: Substitute image in ECS task definition template
       # Requires ECS_TASK_DEFINITION secret containing task def template path or file content
+      # this template, replace the old image with the new one I just built, and give me a new version of the definition to deploy.
       - name: Render ECS task definition with new image
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{ secrets.ECS_TASK_DEFINITION }}
-          container-name: webapi
+          task-definition: ${{ secrets.ECS_TASK_DEFINITION }} #A Task Definition is a JSON file(Define container config)
+          container-name: webapi #Replaces the Docker image URI for your container named webapi
           image: ${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
 
       # Step 6: Deploy the updated ECS task definition to the target service
       # Requires ECS_SERVICE and ECS_CLUSTER secrets
-      - name: Deploy to ECS
+      - name:  Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ secrets.ECS_SERVICE }}
-          cluster: ${{ secrets.ECS_CLUSTER }}
+          service: ${{ secrets.ECS_SERVICE }} #Launching and maintaining the number of running tasks (containers),(Deploy, update, and auto-manage running containers)
+          cluster: ${{ secrets.ECS_CLUSTER }} #ECS needs to know where to deploy your containers. Without a cluster, it doesn’t know what infrastructure to use(run containers)
           wait-for-service-stability: true
 
-      # Step 7: Upload any published artifacts (if applicable)
+      # Step 7: Upload any published artifacts (if applicable) Uploads files from the ./publish folder to GitHub as a downloadable artifact.
       # You must ensure ./publish directory exists from prior job/step or adjust path
       - name: Upload published artifacts
         if: always()
