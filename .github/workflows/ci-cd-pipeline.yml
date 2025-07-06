@@ -105,14 +105,14 @@ jobs:
           cluster: ${{ secrets.ECS_CLUSTER }} #ECS needs to know where to deploy your containers. Without a cluster, it doesn’t know what infrastructure to use(run containers)
           wait-for-service-stability: true
 
-      # Step 7: Upload any published artifacts (if applicable) Uploads files from the ./publish folder to GitHub as a downloadable artifact.
-      # You must ensure ./publish directory exists from prior job/step or adjust path
+      # Step 7: Upload any published artifacts (if applicable)
       - name: Upload published artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: published-app
-          path: ./publish
+          name: published-app-${{ github.sha }}
+          path: src/WebAPI/bin/Release/net9.0/publish/
+          retention-days: 30
 
 # Additional Recommendations:
 # ----------------------------
