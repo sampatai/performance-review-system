@@ -10,7 +10,7 @@ namespace OfficePerformanceReview.WebAPI.DependencyExtensions
         {
             // Register CorsSettings for DI and bind from configuration
             services.Configure<CorsSettings>(
-                configuration.GetSection("CorsSettings"));
+                configuration.GetSection("Cors"));
 
             services.AddCors(options =>
             {
