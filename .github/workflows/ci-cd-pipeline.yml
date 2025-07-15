@@ -38,6 +38,14 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore ./src/OfficePerformanceReview.sln
 
+      # Step 3.1: Cache NuGet packages
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
       # Step 4: Build the .NET solution in Release mode without restoring packages again
       - name: Build solution
         run: dotnet build ./src/OfficePerformanceReview.sln --configuration Release --no-restore
@@ -105,14 +113,8 @@ jobs:
           cluster: ${{ secrets.ECS_CLUSTER }} #ECS needs to know where to deploy your containers. Without a cluster, it doesn’t know what infrastructure to use(run containers)
           wait-for-service-stability: true
 
-      # Step 7: Upload any published artifacts (if applicable) Uploads files from the ./publish folder to GitHub as a downloadable artifact.
-      # You must ensure ./publish directory exists from prior job/step or adjust path
-      - name: Upload published artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: published-app
-          path: ./publish
+# Note: Removed the artifact upload step as it's not typically needed for deployments.
+#       If you need to upload specific artifacts, adjust the path and conditions accordingly.
 
 # Additional Recommendations:
 # ----------------------------

@@ -88,7 +88,6 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 throw;
             }
         }
-
         public async Task<(IEnumerable<EvaluationFormTemplate> Items, int TotalCount)> GetAllAsync(FilterBase filter, CancellationToken cancellationToken)
         {
             try
@@ -102,17 +101,15 @@ namespace OfficePerformanceReview.Infrastructure.Repository
                 query = query.Where(x => EF.Functions.Like(x.Name, likeSearchTerm) ||
                                          EF.Functions.Like(x.EvaluationType.Name, likeSearchTerm));
 
-                int totalRecords = await query.CountAsync(cancellationToken);
+                var sortedQuery = query.ApplySorting(GetSortColumnMap()!.GetValueOrDefault(filter.SortColumn)!, filter.SortDirection);
 
-                string sortColumn = GetSortColumnMap()
-                    .Where(x => x.Key.Equals(filter.SortColumn))
-                    .FirstOrDefault()
-                    .Value;
-                var results = await query
-                   .ApplySorting(sortColumn, filter.SortDirection)
-                  .Skip((filter.Page - 1) * filter.PageSize)
-                  .Take(filter.PageSize)
-                  .ToListAsync(cancellationToken);
+                var results = await sortedQuery
+                    .Skip((filter.Page - 1) * filter.PageSize)
+                    .Take(filter.PageSize)
+                    .ToListAsync(cancellationToken);
+
+                var totalRecords = await query.CountAsync(cancellationToken);
+
                 return (results, totalRecords);
             }
             catch (Exception ex)
